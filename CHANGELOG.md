@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/9troisquarts/inline-filters/compare/v0.0.7...v0.0.8) (2023-12-06)
+
+
+### Bug Fixes
+
+* onReset should reset the internal state when uncontrolled ([0c85ec5](https://github.com/9troisquarts/inline-filters/commit/0c85ec5c34d909df537b93207c94850771cac66e))
+
 ### [0.0.7](https://github.com/9troisquarts/inline-filters/compare/v0.0.6...v0.0.7) (2023-12-06)
 
 
