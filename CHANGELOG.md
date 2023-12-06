@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://github.com/9troisquarts/inline-filters/compare/v0.0.8...v0.0.9) (2023-12-06)
+
+
+### Bug Fixes
+
+* hasOwn is experimental ([618d226](https://github.com/9troisquarts/inline-filters/commit/618d2267211f3b3bd12ca912200176ef77a50c7d))
+
 ### [0.0.8](https://github.com/9troisquarts/inline-filters/compare/v0.0.7...v0.0.8) (2023-12-06)
 
 
