@@ -48,7 +48,7 @@ const InlineFilters: React.FC<
   const [internalValue, setInternalValue] = useState(value || defaultValue);
 
   useEffect(() => {
-    setInternalValue(value);
+    if(value) setInternalValue(value);
   }, [value]);
 
   const { run: handleChange } = useDebounceFn(
