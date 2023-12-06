@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "errors": "node_modules/antd/es/cascader/index.js (45:6) A comment\n\n\"/*#__PURE__*/\"\n\nin \"node_modules/antd/es/cascader/index.js\" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.\nnode_modules/rc-field-form/es/utils/validateUtil.js (84:14) A comment\n\n\"/*#__PURE__*/\"\n\nin \"node_modules/rc-field-form/es/utils/validateUtil.js\" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.\nwarnings when minifying css:\n▲ [WARNING] Unexpected \";\" [css-syntax-error]\n\n    <stdin>:149:1:\n      149 │ };\n          ╵  ^\n\n\nwarnings when minifying css:\n▲ [WARNING] Unexpected \";\" [css-syntax-error]\n\n    <stdin>:149:1:\n      149 │ };\n          ╵  ^\n\n\n",
+  "timestamp": "2023-12-05 17:48:08",
+  "vite_ruby": "3.5.0",
+  "digest": "18d17f4a1b7ce6c47659632f0fccc670cd02b2b5"
+}
