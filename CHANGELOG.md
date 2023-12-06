@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.7](https://github.com/9troisquarts/inline-filters/compare/v0.0.6...v0.0.7) (2023-12-06)
+
+
+### Bug Fixes
+
+* skip useeffect if value is undefined ([5e12b6b](https://github.com/9troisquarts/inline-filters/commit/5e12b6b5153df6376bb3d5ff7d119a6753d983a0))
+
 ### [0.0.6](https://github.com/9troisquarts/inline-filters/compare/v0.0.5...v0.0.6) (2023-12-06)
 
 
