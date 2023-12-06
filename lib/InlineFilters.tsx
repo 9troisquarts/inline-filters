@@ -34,7 +34,7 @@ const InlineFilters: React.FC<
   const {
     schema,
     value = undefined,
-    defaultValue = undefined,
+    defaultValue = {},
     debug = false,
     delay = 200,
     resetText,
@@ -50,6 +50,11 @@ const InlineFilters: React.FC<
   useEffect(() => {
     if(value) setInternalValue(value);
   }, [value]);
+
+  const handleReset = () => {
+    if (onReset && !props.hasOwn('value')) setInternalValue({});
+    if (onReset) onReset();
+  }
 
   const { run: handleChange } = useDebounceFn(
     (values) => {
@@ -126,7 +131,7 @@ const InlineFilters: React.FC<
         />
       )}
       {onReset && (
-        <Button type="text" onClick={onReset}>
+        <Button type="text" onClick={handleReset}>
           {resetText || "Reset filters"}
         </Button>
       )}
