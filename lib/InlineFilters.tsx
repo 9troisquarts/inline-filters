@@ -52,8 +52,10 @@ const InlineFilters: React.FC<
   }, [value]);
 
   const handleReset = () => {
-    if (onReset && !props.hasOwn('value')) setInternalValue({});
-    if (onReset) onReset();
+    if (onReset) {
+      if (!value) setInternalValue({});
+      onReset();
+    }
   }
 
   const { run: handleChange } = useDebounceFn(

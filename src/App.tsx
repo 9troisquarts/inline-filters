@@ -90,7 +90,7 @@ function App() {
   return (
     <>
       <InlineFilters
-        value={search}
+        defaultValue={search}
         onReset={onReset}
         resetText="Réinitialiser les filtres"
         toggle={{
