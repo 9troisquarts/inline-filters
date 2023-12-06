@@ -99,7 +99,6 @@ const InlineFilters: React.FC<
 
   return (
     <Space style={{ width: "100%" }} wrap>
-      Inline filters
       {fields.map((field) => {
         const FilterComponent = filterForType[field.input.type] || SelectFilter;
         return (
