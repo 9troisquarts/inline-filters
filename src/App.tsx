@@ -7,6 +7,22 @@ import InlineFilters from '../lib/InlineFilters';
 import dayjs from '../lib/utils/dayjs';
 import { InlineFilterSchema } from '../lib/types';
 
+const onLoadKeywordsOptions = async ({ keywords, matchType }: { keywords: string[], matchType: string }) => {
+  console.log('Loading keywords options', keywords, matchType)
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        'Harry',
+        'Harry Potter',
+        'Harry Potter et la chambre des secrets',
+        'Hermione',
+        'Hermione Granger',
+        'Hermione et Harry'
+      ])
+    }, 1000)
+  })
+}
+
 const schema: InlineFilterSchema = [
   {
     name: 'nameEq',
@@ -78,6 +94,24 @@ const schema: InlineFilterSchema = [
         multiple: true,
         searchPlaceholder: 'Rechercher...',
         selectAllText: 'Tous les clients',
+      }
+    }
+  },
+  {
+    name: 'commodityKeywords',
+    label: 'Commodités',
+    input: {
+      type: 'keywords',
+      inputProps: {
+        // @ts-ignore
+        loadOptions: onLoadKeywordsOptions,
+        matchText: 'Rechercher',
+        allText: 'tous les',
+        anyText: 'n\'importe quel',
+        keywordsText: 'mots-clés',
+        clearText: 'Réinitialiser',
+        cancelText: 'Annuler',
+        searchText: 'Rechercher'
       }
     }
   }
