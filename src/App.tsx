@@ -9,18 +9,16 @@ import { InlineFilterSchema } from '../lib/types';
 
 const onLoadKeywordsOptions = async ({ keywords, matchType }: { keywords: string[], matchType: string }) => {
   console.log('Loading keywords options', keywords, matchType)
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        'Harry',
-        'Harry Potter',
-        'Harry Potter et la chambre des secrets',
-        'Hermione',
-        'Hermione Granger',
-        'Hermione et Harry'
-      ])
-    }, 1000)
-  })
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  return [
+    'Harry',
+    'Harry Potter',
+    'Harry Potter et la chambre des secrets',
+    'Hermione',
+    'Hermione Granger',
+    'Hermione et Harry'
+  ]
 }
 
 const schema: InlineFilterSchema = [
@@ -98,20 +96,22 @@ const schema: InlineFilterSchema = [
     }
   },
   {
-    name: 'commodityKeywords',
-    label: 'Commodités',
+    name: 'keywords',
+    label: 'Mots clés',
     input: {
       type: 'keywords',
       inputProps: {
         // @ts-ignore
         loadOptions: onLoadKeywordsOptions,
-        matchText: 'Rechercher',
-        allText: 'tous les',
-        anyText: 'n\'importe quel',
-        keywordsText: 'mots-clés',
-        clearText: 'Réinitialiser',
-        cancelText: 'Annuler',
-        searchText: 'Rechercher'
+        i18n: {
+          matchText: 'Rechercher',
+          allText: 'tous les',
+          anyText: 'n\'importe quel',
+          keywordsText: 'mots-clés',
+          clearText: 'Réinitialiser',
+          cancelText: 'Annuler',
+          searchText: 'Rechercher'
+        }
       }
     }
   }

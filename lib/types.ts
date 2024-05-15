@@ -65,14 +65,15 @@ export type KeywordsInputProps = {
   type: "keywords";
   inputProps: {
     loadOptions: (props: KeywordsLoadOptionsProps) => Promise<string[]>;
-    matchType?: string;
-    matchText?: string;
-    allText?: string;
-    anyText?: string;
-    keywordsText?: string;
-    clearText?: string;
-    cancelText?: string;
-    searchText?: string;
+    i18n?: {
+      matchText?: string;
+      allText?: string;
+      anyText?: string;
+      keywordsText?: string;
+      clearText?: string;
+      cancelText?: string;
+      searchText?: string;
+    }
   };
 };
 

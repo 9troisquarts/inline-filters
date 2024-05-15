@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FieldSchema, KeywordsInputProps } from '../types';
-import { Badge, Button, Dropdown, Input, MenuProps, Popover, Select, Space, Typography } from 'antd';
+import { Badge, Button, Dropdown, MenuProps, Popover, Select, Space, Typography } from 'antd';
 import '../index.css';
 import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
 import _ from 'lodash'
@@ -37,13 +37,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   const {
     inputProps: {
       loadOptions,
-      matchText,
-      allText,
-      anyText,
-      keywordsText,
-      clearText,
-      cancelText,
-      searchText
+      i18n
     } = {},
   } = (field.input || {}) as KeywordsInputProps;
 
@@ -87,7 +81,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   const items: MenuProps['items'] = [
     {
       key: '0',
-      label: allText || 'all',
+      label: i18n?.allText || 'all',
       onClick: () => setInternalValue({
         ...internalValue,
         matchType: 'all'
@@ -95,7 +89,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
     },
     {
       key: '1',
-      label: anyText || 'any',
+      label: i18n?.anyText || 'any',
       onClick: () => setInternalValue({
         ...internalValue,
         matchType: 'any'
@@ -138,112 +132,110 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   }
 
   const displayMatchType = () => {
-    return internalValue?.matchType === 'all' ? allText || 'all' : anyText || 'any'
+    return internalValue?.matchType === 'all' ? i18n?.allText || 'all' : i18n?.anyText || 'any'
   }
 
   const popoverContent = (
-    <>
-      <Space direction="vertical">
-        <Title level={5}>
-          { field?.label }
-        </Title>
-        <div className="wand__inline-filter__match-type">
-          <div>
-            { matchText || 'Matches' }
-          </div>
-          <Dropdown
-            menu={{ items }}
-            trigger={['click']}
-          >
-            <a onClick={e => e.preventDefault()}>
-              <span>
-                {displayMatchType()} <DownOutlined />
-              </span>
-            </a>
-          </Dropdown>
-          <div>
-            { keywordsText || 'of theses keywords :' }
-          </div>
+    <div className="wand__inline-filter__keywords__popover-content">
+      <Title level={5}>
+        { field?.label }
+      </Title>
+      <div className="wand__inline-filter__match-type">
+        <div>
+          { i18n?.matchText || 'Matches' }
         </div>
-        <div className="wand__inline-filter__keywords__popover__keyword-list">
-          { (internalValue?.keywords)?.map((keyword, index) => (
-            <div
-              key={index}
-              className="wand__inline-filter__keywords__popover__keyword"
-            >
-              <div>
-                {keyword}
-              </div>
-              <DeleteOutlined
-                onClick={() => setInternalValue({
-                  ...internalValue,
-                  keywords: internalValue?.keywords?.filter((k, i) => i !== index)
-                })}
-              />
-            </div>
-          )) }
-        </div>
-         <Select
-          className={`wand__inline-filter__search-input`}
-          showSearch
-          placeholder={'Add a keyword'}
-          loading={searching}
-          onSearch={(s) => {
-            setSearch(s || '')
-          }}
-          onChange={(option) => {
-            setSearch('')
-            setSearchResults([])
-            setInternalValue({
-              ...internalValue,
-              keywords: [...(internalValue?.keywords || []), option]
-            })
-          }}
-          style={{
-            width: '100%',
-            marginBottom: 10
-          }} 
-          value={search}
+        <Dropdown
+          menu={{ items }}
+          trigger={['click']}
         >
-          { getFilteredSearchResults(searchResults).map((result, resultIndex) => (
-            <Option
-              key={resultIndex}
-              value={result}
-            >
-              {displayOptionLabel(result)}
-            </Option>
-          )) }
-        </Select>
-        <div className="wand__inline-filter__keywords__popover-footer">
-          <div>
-            <a onClick={onClearFilter}>
-              { clearText || 'Clear' }
-            </a>
-          </div>
-          <div className="wand__inline-filter__keywords__popover-footer-right">
-            <Button
-              type="default"
-              onClick={() => {
-                setInternalValue(value || defaultValue)
-                setPopoverIsOpen(false)
-              }}
-            >
-              { cancelText || 'Cancel' }
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => {
-                onChange({ [field.name]: internalValue })
-                setPopoverIsOpen(false)
-              }}
-              disabled={_.isEqual(_.sortBy(value), _.sortBy(internalValue))}
-            >
-              { searchText || 'Search' }
-            </Button>
-          </div>
+          <a onClick={e => e.preventDefault()}>
+            <span>
+              {displayMatchType()} <DownOutlined />
+            </span>
+          </a>
+        </Dropdown>
+        <div>
+          { i18n?.keywordsText || 'of theses keywords :' }
         </div>
-      </Space>
-    </>
+      </div>
+      <div className="wand__inline-filter__keywords__popover__keyword-list">
+        { (internalValue?.keywords)?.map((keyword, index) => (
+          <div
+            key={index}
+            className="wand__inline-filter__keywords__popover__keyword"
+          >
+            <div>
+              {keyword}
+            </div>
+            <DeleteOutlined
+              onClick={() => setInternalValue({
+                ...internalValue,
+                keywords: internalValue?.keywords?.filter((k, i) => i !== index)
+              })}
+            />
+          </div>
+        )) }
+      </div>
+        <Select
+        className={`wand__inline-filter__search-input`}
+        showSearch
+        placeholder={'Add a keyword'}
+        loading={searching}
+        onSearch={(s) => {
+          setSearch(s || '')
+        }}
+        onChange={(option) => {
+          setSearch('')
+          setSearchResults([])
+          setInternalValue({
+            ...internalValue,
+            keywords: [...(internalValue?.keywords || []), option]
+          })
+        }}
+        style={{
+          width: '100%',
+          marginBottom: 10
+        }} 
+        value={search}
+      >
+        { getFilteredSearchResults(searchResults).map((result, resultIndex) => (
+          <Option
+            key={resultIndex}
+            value={result}
+          >
+            {displayOptionLabel(result)}
+          </Option>
+        )) }
+      </Select>
+      <div className="wand__inline-filter__keywords__popover-footer">
+        <div>
+          <a onClick={onClearFilter}>
+            { i18n?.clearText || 'Clear' }
+          </a>
+        </div>
+        <div className="wand__inline-filter__keywords__popover-footer-right">
+          <Button
+            type="default"
+            onClick={() => {
+              setInternalValue(value || defaultValue)
+              setPopoverIsOpen(false)
+            }}
+          >
+            { i18n?.cancelText || 'Cancel' }
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => {
+              onChange({ [field.name]: internalValue })
+              setPopoverIsOpen(false)
+            }}
+            disabled={_.isEqual(_.sortBy(value), _.sortBy(internalValue))}
+          >
+            { i18n?.searchText || 'Search' }
+          </Button>
+        </div>
+      </div>
+    </div>
   )
   
   return (
