@@ -128,7 +128,10 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   }
 
   const getFilteredSearchResults = (results: string[]) => {
-    return results.filter(result => !internalValue?.keywords?.includes(result))
+    if (!Array.isArray(results)) {
+      return [];
+    }
+    return results.filter(result => !internalValue?.keywords?.includes(result));
   }
 
   const displayMatchType = () => {
@@ -170,7 +173,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
             <CloseCircleOutlined
               onClick={() => setInternalValue({
                 ...internalValue,
-                keywords: internalValue?.keywords?.filter((k, i) => i !== index)
+                keywords: internalValue?.keywords?.filter((_k, i) => i !== index)
               })}
             />
           </div>
