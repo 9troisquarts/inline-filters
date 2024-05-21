@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.10](https://github.com/9troisquarts/inline-filters/compare/v0.0.9...v0.0.10) (2024-05-21)
+
+
+### Features
+
+* keywords filter ([913f789](https://github.com/9troisquarts/inline-filters/commit/913f789e631879d4ecb8afbca9dd829083d1e9c8))
+* propriété i18n ([c731035](https://github.com/9troisquarts/inline-filters/commit/c7310359f4e2e2cb4516a746af085421b3f15894))
+
+
+### Bug Fixes
+
+* retours alex/kevin sur filter keywords ([c9bd4e0](https://github.com/9troisquarts/inline-filters/commit/c9bd4e08de88a0c3d2e095e762fab49a444eb2f5))
+
 ### [0.0.9](https://github.com/9troisquarts/inline-filters/compare/v0.0.8...v0.0.9) (2023-12-06)
 
 
