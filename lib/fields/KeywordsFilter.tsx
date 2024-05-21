@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FieldSchema, KeywordsInputProps } from '../types';
 import { Badge, Button, Dropdown, MenuProps, Popover, Select, Space, Typography } from 'antd';
 import '../index.css';
-import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, DownOutlined } from '@ant-design/icons';
 import _ from 'lodash'
 import { useDebounce } from 'ahooks';
 
@@ -150,7 +150,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
         >
           <a onClick={e => e.preventDefault()}>
             <span>
-              {displayMatchType()} <DownOutlined />
+              {displayMatchType()} <DownOutlined style={{ fontSize: '12px' }} />
             </span>
           </a>
         </Dropdown>
@@ -167,7 +167,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
             <div>
               {keyword}
             </div>
-            <DeleteOutlined
+            <CloseCircleOutlined
               onClick={() => setInternalValue({
                 ...internalValue,
                 keywords: internalValue?.keywords?.filter((k, i) => i !== index)
@@ -215,7 +215,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
         </div>
         <div className="wand__inline-filter__keywords__popover-footer-right">
           <Button
-            type="default"
+            type="link"
             onClick={() => {
               setInternalValue(value || defaultValue)
               setPopoverIsOpen(false)
