@@ -128,10 +128,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   }
 
   const getFilteredSearchResults = (results: string[]) => {
-    if (!Array.isArray(results)) {
-      return [];
-    }
-    return results.filter(result => !internalValue?.keywords?.includes(result));
+    return results?.filter(result => !internalValue?.keywords?.includes(result))
   }
 
   const displayMatchType = () => {
