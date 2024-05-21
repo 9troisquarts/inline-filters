@@ -198,7 +198,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
         }} 
         value={search}
       >
-        { getFilteredSearchResults(searchResults).map((result, resultIndex) => (
+        { getFilteredSearchResults(searchResults || []).map((result, resultIndex) => (
           <Option
             key={resultIndex}
             value={result}
