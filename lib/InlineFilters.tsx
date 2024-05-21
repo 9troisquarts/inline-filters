@@ -60,7 +60,6 @@ const InlineFilters: React.FC<
 
   const { run: handleChange } = useDebounceFn(
     (values) => {
-      if (debug) console.log("INLINE FILTERS / handleChange", values);
       if (props.onChange) props.onChange(values);
     },
     { wait: delay }
