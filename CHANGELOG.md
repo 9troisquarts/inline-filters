@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.14](https://github.com/9troisquarts/inline-filters/compare/v0.0.13...v0.0.14) (2024-05-21)
+
+
+### Bug Fixes
+
+* avoid error 'Cannot read properties of undefined (reading 'map')' ([9efba8c](https://github.com/9troisquarts/inline-filters/commit/9efba8ca8a8d165bc8cb776b6e478d246443a175))
+
 ### [0.0.13](https://github.com/9troisquarts/inline-filters/compare/v0.0.12...v0.0.13) (2024-05-21)
 
 
