@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FieldSchema, KeywordsInputProps } from '../types';
-import { Badge, Button, Dropdown, MenuProps, Popover, Select, Space, Typography } from 'antd';
+import { AutoComplete, Badge, Button, Dropdown, MenuProps, Popover, Select, Space, Typography } from 'antd';
 import '../index.css';
 import { CloseCircleOutlined, DownOutlined } from '@ant-design/icons';
 import _ from 'lodash'
@@ -47,7 +47,6 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   const [search, setSearch] = useState<string>('')
   const debouncedSearch = useDebounce(search, { wait: 200 })
   const [searchResults, setSearchResults] = useState<string[]>([])
-  const [searching, setSearching] = useState<boolean>(false)
 
   useEffect(() => {
     onRestoreFilter()
@@ -62,7 +61,6 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   useEffect(() => {
     if (debouncedSearch !== '' && debouncedSearch !== undefined) {
       if (typeof loadOptions === 'function') {
-        setSearching(true)
         loadOptions({
           keywords: [
             ...internalValue?.keywords || [],
@@ -71,7 +69,6 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
           matchType: internalValue?.matchType || 'all',
         })
           .then((results: string[]) => {
-            setSearching(false)
             setSearchResults(results)
           })
       }
@@ -113,7 +110,6 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
     setInternalValue(defaultValue)
     setSearch('')
     setSearchResults([])
-    setSearching(false)
     onChange({ [field.name]: {
       keywords: [],
       matchType: 'all'
@@ -124,11 +120,11 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
     setInternalValue(value || defaultValue)
     setSearch('')
     setSearchResults([])
-    setSearching(false)
   }
 
   const getFilteredSearchResults = (results: string[]) => {
-    return results?.filter(result => !internalValue?.keywords?.includes(result))
+    const filteredResults = results?.filter(result => !internalValue?.keywords?.includes(result));
+    return [search].concat(filteredResults);
   }
 
   const displayMatchType = () => {
@@ -176,15 +172,14 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
           </div>
         )) }
       </div>
-        <Select
+      <AutoComplete
         className={`wand__inline-filter__search-input`}
         showSearch
         placeholder={'Add a keyword'}
-        loading={searching}
         onSearch={(s) => {
           setSearch(s || '')
         }}
-        onChange={(option) => {
+        onSelect={(option) => {
           setSearch('')
           setSearchResults([])
           setInternalValue({
@@ -206,7 +201,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
             {displayOptionLabel(result)}
           </Option>
         )) }
-      </Select>
+      </AutoComplete>
       <div className="wand__inline-filter__keywords__popover-footer">
         <div>
           <a onClick={onClearFilter}>
@@ -229,7 +224,6 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
               onChange({ [field.name]: internalValue })
               setPopoverIsOpen(false)
             }}
-            disabled={_.isEqual(_.sortBy(value), _.sortBy(internalValue))}
           >
             { i18n?.searchText || 'Search' }
           </Button>
