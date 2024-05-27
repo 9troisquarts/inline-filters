@@ -244,7 +244,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
         overlayClassName="wand__inline-filter__popover"
         overlayStyle={{ width: '500px' }}
       >
-        <div className={`wand__inline-filter__filter`}>
+        <div className={`wand__inline-filter__filter ${internalValue?.keywords?.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${internalValue?.keywords?.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
           <Space>
             <span className="wand__inline-filter__label">
               {field.label}
