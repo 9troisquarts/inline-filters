@@ -96,7 +96,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
 
   const displayOptionLabel = (label: string) => {
     const regex = new RegExp(`\\b(${(internalValue?.keywords || [])?.join('|')})\\b`, 'gi')
-    const parts = label.split(regex)
+    const parts = label?.split(regex)
     return (
       <React.Fragment>
         {parts.map((partie, index) => (
@@ -124,7 +124,11 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
 
   const getFilteredSearchResults = (results: string[]) => {
     const filteredResults = results?.filter(result => !internalValue?.keywords?.includes(result));
-    return [search].concat(filteredResults);
+    if(search == '' || search == undefined) {
+      return filteredResults
+    } else {
+      return [search].concat(filteredResults);
+    }
   }
 
   const displayMatchType = () => {
