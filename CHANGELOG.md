@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.17](https://github.com/9troisquarts/inline-filters/compare/v0.0.16...v0.0.17) (2024-06-10)
+
+
+### Bug Fixes
+
+* delete hover style on filters keyword options ([81de5a4](https://github.com/9troisquarts/inline-filters/commit/81de5a40d4ea85450541e0f07a17a73d5dfad7d4))
+* empty option on keywords filter ([60a566f](https://github.com/9troisquarts/inline-filters/commit/60a566fa7f94932de0ee38d5b41ba3ccc12ca4d7))
+* keywords filter words highlight ([b4ae5eb](https://github.com/9troisquarts/inline-filters/commit/b4ae5eb45daa37f060b07debdc6a477c98bf7541))
+
 ### [0.0.16](https://github.com/9troisquarts/inline-filters/compare/v0.0.15...v0.0.16) (2024-05-27)
 
 
