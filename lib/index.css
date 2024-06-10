@@ -280,10 +280,11 @@
   display: flex;
   gap: 5px;
   align-items: center;
-  padding: 5px ;
+  padding: 5px;
 }
 
 .wand__inline-filter__keywords__popover__keyword:hover {
-  font-weight: bold;
-  transition: font-weight 0.2s ease;
+  background-color: #adbebc;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
 }

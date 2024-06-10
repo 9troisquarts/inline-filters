@@ -105,11 +105,11 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
 
     return (
       <React.Fragment>
-      {parts.map((word, index) => (
-        <span key={index} dangerouslySetInnerHTML={{ __html: sanitizeLabel(`${word.replace(regex, '<b>$&</b>')}`) }}>
-        </span>
-      ))}
-    </React.Fragment>
+        {parts.map((word, index) => (
+          <span key={index} dangerouslySetInnerHTML={{ __html: sanitizeLabel(`${word.replace(regex, '<b>$&</b>')}`) }}>
+          </span>
+        ))}
+      </React.Fragment>
     )
   }
 
