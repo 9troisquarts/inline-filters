@@ -47,6 +47,7 @@
     "@storybook/react": "^7.6.3",
     "@storybook/react-vite": "^7.6.3",
     "@storybook/test": "^7.6.3",
+    "@types/dompurify": "^3.0.5",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
@@ -72,6 +73,7 @@
     "vite-plugin-ruby": "^5.0.0"
   },
   "dependencies": {
+    "dompurify": "^3.1.5",
     "react": "<=16",
     "react-dom": "^18"
   },

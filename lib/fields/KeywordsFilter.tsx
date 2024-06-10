@@ -5,6 +5,7 @@ import '../index.css';
 import { CloseCircleOutlined, DownOutlined } from '@ant-design/icons';
 import _ from 'lodash'
 import { useDebounce } from 'ahooks';
+import DOMPurify from 'dompurify';
 
 const { Title } = Typography;
 const { Option } = Select
@@ -94,15 +95,21 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
     }
   ];
 
+  const sanitizeLabel = (label: string) => {
+    return DOMPurify.sanitize(label);
+  }
+
   const displayOptionLabel = (label: string) => {
-    const regex = new RegExp(`\\b(${(internalValue?.keywords || [])?.join('|')})\\b`, 'gi')
-    const parts = label?.split(regex)
+    const regex = internalValue?.keywords?.length > 0 ? new RegExp(`(${([internalValue?.keywords, search])?.join('|')})`, 'gi') : new RegExp(`(${search})`, 'gi')
+    const parts = label?.split(regex).filter(Boolean)
+
     return (
       <React.Fragment>
-        {parts.map((partie, index) => (
-          regex.test(partie) ? <b key={index}>{partie}</b> : <span key={index}>{partie}</span>
-        ))}
-      </React.Fragment>
+      {parts.map((word, index) => (
+        <span key={index} dangerouslySetInnerHTML={{ __html: sanitizeLabel(`${word.replace(regex, '<b>$&</b>')}`) }}>
+        </span>
+      ))}
+    </React.Fragment>
     )
   }
 
