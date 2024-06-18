@@ -101,6 +101,8 @@ const schema: InlineFilterSchema = [
     input: {
       type: 'keywords',
       inputProps: {
+        showReset: false,
+        defaultMatchType: 'any',
         // @ts-ignore
         loadOptions: onLoadKeywordsOptions,
         i18n: {

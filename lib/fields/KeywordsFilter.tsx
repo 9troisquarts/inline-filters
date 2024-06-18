@@ -10,10 +10,7 @@ import DOMPurify from 'dompurify';
 const { Title } = Typography;
 const { Option } = Select
 
-const defaultValue = {
-  keywords: [],
-  matchType: 'all'
-}
+
 
 type ValueType = {
   keywords: string[]
@@ -38,9 +35,16 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   const {
     inputProps: {
       loadOptions,
-      i18n
+      i18n,
+      showReset,
+      defaultMatchType = 'all'
     } = {},
   } = (field.input || {}) as KeywordsInputProps;
+
+  const defaultValue = {
+    keywords: [],
+    matchType: defaultMatchType || 'all'
+  }
 
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
   const [internalValue, setInternalValue] = useState<ValueType>(value || defaultValue)
@@ -214,11 +218,13 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
         )) }
       </AutoComplete>
       <div className="wand__inline-filter__keywords__popover-footer">
-        <div>
-          <a onClick={onClearFilter}>
-            { i18n?.clearText || 'Clear' }
-          </a>
-        </div>
+        {showReset && (
+          <div>
+            <a onClick={onClearFilter}>
+              { i18n?.clearText || 'Clear' }
+            </a>
+          </div>
+        )}
         <div className="wand__inline-filter__keywords__popover-footer-right">
           <Button
             type="link"
@@ -231,6 +237,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
           </Button>
           <Button
             type="primary"
+            disabled={internalValue?.keywords?.length === 0}
             onClick={() => {
               onChange({ [field.name]: internalValue })
               setPopoverIsOpen(false)

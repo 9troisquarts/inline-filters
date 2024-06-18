@@ -266,6 +266,7 @@
 
 .wand__inline-filter__keywords__popover-footer-right {
   display: flex;
+  margin-left: auto;
   gap: 10px;
 }
 
