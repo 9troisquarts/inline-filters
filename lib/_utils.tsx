@@ -4,6 +4,7 @@ import DateFilter from "./fields/DateFilter";
 import DateRangeFilter from "./fields/DateRangeFilter";
 import SelectFilter from "./fields/SelectFilter";
 import StringFilter from "./fields/StringFilter";
+import KeywordsFilter from "./fields/KeywordsFilter";
 
 const renderDate = () => {
   return <Space>Render date</Space>;
@@ -24,4 +25,5 @@ export const filterForType = {
   boolean: BooleanFilter,
   daterange: DateRangeFilter,
   select: SelectFilter,
+  keywords: KeywordsFilter,
 };

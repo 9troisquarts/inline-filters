@@ -1,11 +1,24 @@
 import { useState } from 'react'
 import './App.css'
 import 'antd/dist/antd.css';
-
 import { UserOutlined } from '@ant-design/icons';
 import InlineFilters from '../lib/InlineFilters';
 import dayjs from '../lib/utils/dayjs';
 import { InlineFilterSchema } from '../lib/types';
+
+const onLoadKeywordsOptions = async ({ keywords, matchType }: { keywords: string[], matchType: string }) => {
+  console.log('Loading keywords options', keywords, matchType)
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  return [
+    'Harry',
+    'Harry Potter',
+    'Harry Potter et la chambre des secrets',
+    'Hermione',
+    'Hermione Granger',
+    'Hermione et Harry'
+  ]
+}
 
 const schema: InlineFilterSchema = [
   {
@@ -78,6 +91,28 @@ const schema: InlineFilterSchema = [
         multiple: true,
         searchPlaceholder: 'Rechercher...',
         selectAllText: 'Tous les clients',
+      }
+    }
+  },
+  {
+    name: 'keywords',
+    label: 'Mots clés',
+    input: {
+      type: 'keywords',
+      inputProps: {
+        showReset: false,
+        defaultMatchType: 'any',
+        // @ts-ignore
+        loadOptions: onLoadKeywordsOptions,
+        i18n: {
+          matchText: 'Rechercher',
+          allText: 'tous les',
+          anyText: 'n\'importe quel',
+          keywordsText: 'mots-clés',
+          clearText: 'Réinitialiser',
+          cancelText: 'Annuler',
+          searchText: 'Rechercher'
+        }
       }
     }
   }

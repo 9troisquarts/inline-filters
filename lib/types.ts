@@ -56,12 +56,36 @@ export type BooleanInputProps = {
   };
 };
 
+export type KeywordsLoadOptionsProps = {
+  keywords: string[]
+  matchType: string
+};
+
+export type KeywordsInputProps = {
+  type: "keywords";
+  inputProps: {
+    loadOptions: (props: KeywordsLoadOptionsProps) => Promise<string[]>;
+    showReset?: boolean;
+    defaultMatchType?: string;
+    i18n?: {
+      matchText?: string;
+      allText?: string;
+      anyText?: string;
+      keywordsText?: string;
+      clearText?: string;
+      cancelText?: string;
+      searchText?: string;
+    }
+  };
+};
+
 export type InputType =
   | DatePickerInputProps
   | SelectInputProps
   | DateInputProps
   | StringInputProps
-  | BooleanInputProps;
+  | BooleanInputProps
+  | KeywordsInputProps;
 
 export type FieldItemType = {
   label?: string;
