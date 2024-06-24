@@ -16,6 +16,7 @@ interface BaseInlineFilters {
   toggle?: FilterTogglerType;
   onReset: () => void;
   onChange: (object: any) => void;
+  resetRender?: React.ReactNode
 }
 
 interface InlineFiltersWithDefaultValue extends BaseInlineFilters {
@@ -40,6 +41,7 @@ const InlineFilters: React.FC<
     resetText,
     toggle,
     onReset,
+    resetRender
   } = props;
 
   const [hiddenFilters, setHiddenFilters] = useLocalStorageState<string[]>(
@@ -93,6 +95,12 @@ const InlineFilters: React.FC<
     );
   };
 
+  const resetComponent = onReset && (
+    resetRender 
+      ? <span onClick={handleReset}>{resetRender}</span> 
+      : <Button type="text" onClick={handleReset}>{resetText || "Reset filters"}</Button>
+  )
+
   let fields = schema;
   if (toggle && hiddenFilters && hiddenFilters.length > 0)
     fields = fields.filter(
@@ -131,11 +139,7 @@ const InlineFilters: React.FC<
           {...(toggle || {})}
         />
       )}
-      {onReset && (
-        <Button type="text" onClick={handleReset}>
-          {resetText || "Reset filters"}
-        </Button>
-      )}
+      {resetComponent}
     </Space>
   );
 };
