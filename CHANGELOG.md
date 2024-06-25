@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.21](https://github.com/9troisquarts/inline-filters/compare/v0.0.20...v0.0.21) (2024-06-25)
+
+
+### Bug Fixes
+
+* Ajout de la props resetButton ([daa1574](https://github.com/9troisquarts/inline-filters/commit/daa157434a181f3a035d762664c048d0762c51ed))
+* keywords filter changes ([f7b1714](https://github.com/9troisquarts/inline-filters/commit/f7b17147d7f2d68ed9a42ff453d59ee508db7dba))
+
 ### [0.0.20](https://github.com/9troisquarts/inline-filters/compare/v0.0.18...v0.0.20) (2024-06-25)
 
 
