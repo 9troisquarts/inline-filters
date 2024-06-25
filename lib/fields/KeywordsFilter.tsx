@@ -18,7 +18,7 @@ type FilterProps = {
   field: FieldSchema & { name: string };
   value?: ValueType;
   onChange: (values: {
-    [k: string]: ValueType;
+    [k: string]: ValueType | undefined
   }) => void;
 }
 
@@ -99,12 +99,18 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   const displayOptionLabel = (label: string) => {
     const regex = internalValue?.keywords?.length > 0 ? new RegExp(`(${([internalValue?.keywords, search])?.join('|')})`, 'gi') : new RegExp(`(${search})`, 'gi')
     const parts = label?.split(regex).filter(Boolean)
-
+    
     return (
       <React.Fragment>
         {parts.map((word, index) => (
-          <span key={index} dangerouslySetInnerHTML={{ __html: `${word.replace(regex, '<b>$&</b>')}` }}>
-          </span>
+          word.match(regex) ? 
+          <b key={index}>
+            {word}
+          </b> : (
+            <span key={index}>
+              {word}
+            </span>
+          )
         ))}
       </React.Fragment>
     )
@@ -114,12 +120,8 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
     setInternalValue(defaultValue)
     setSearch('')
     setSearchResults([])
-    onChange({ [field.name]: {
-      keywords: [],
-      matchType: 'all'
-    } })
+    onChange({ [field.name]: undefined })
   }
-
   const onRestoreFilter = () => {
     setInternalValue(value || defaultValue)
     setSearch('')

@@ -1,7 +1,7 @@
 {
   "name": "@9troisquarts/inline-filters",
   "private": false,
-  "version": "0.0.19",
+  "version": "0.0.20",
   "type": "module",
   "files": [
     "dist"
@@ -47,7 +47,6 @@
     "@storybook/react": "^7.6.3",
     "@storybook/react-vite": "^7.6.3",
     "@storybook/test": "^7.6.3",
-    "@types/dompurify": "^3.0.5",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
