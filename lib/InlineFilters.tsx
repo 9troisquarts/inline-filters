@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { useDebounceFn, useLocalStorageState } from "ahooks";
-import { Button, Space } from "antd";
+import { Button, ButtonProps, Space } from "antd";
 import omit from "lodash/omit";
-import React, { useEffect, useState } from "react";
+import React, { cloneElement, useEffect, useState } from "react";
 import FilterToggler from "./FilterToggler";
 import { filterForType } from "./_utils";
 import SelectFilter from "./fields/SelectFilter";
@@ -16,7 +16,8 @@ interface BaseInlineFilters {
   toggle?: FilterTogglerType;
   onReset: () => void;
   onChange: (object: any) => void;
-  resetRender?: React.ReactNode
+  resetButton?: React.ReactNode;
+  resetButtonProps?: ButtonProps;
 }
 
 interface InlineFiltersWithDefaultValue extends BaseInlineFilters {
@@ -41,7 +42,8 @@ const InlineFilters: React.FC<
     resetText,
     toggle,
     onReset,
-    resetRender
+    resetButton,
+    resetButtonProps = {},
   } = props;
 
   const [hiddenFilters, setHiddenFilters] = useLocalStorageState<string[]>(
@@ -95,11 +97,12 @@ const InlineFilters: React.FC<
     );
   };
 
-  const resetComponent = onReset && (
-    resetRender 
-      ? <span onClick={handleReset}>{resetRender}</span> 
-      : <Button type="text" onClick={handleReset}>{resetText || "Reset filters"}</Button>
-  )
+  let resetComponent = (
+    <Button type="text" {...resetButtonProps} onClick={handleReset}>
+      {resetText || "Reset filters"}
+    </Button>
+  ) 
+  if (resetButton) resetComponent = cloneElement(resetButton, { onClick: handleReset });
 
   let fields = schema;
   if (toggle && hiddenFilters && hiddenFilters.length > 0)
@@ -139,7 +142,7 @@ const InlineFilters: React.FC<
           {...(toggle || {})}
         />
       )}
-      {resetComponent}
+      {onReset && resetComponent}
     </Space>
   );
 };
