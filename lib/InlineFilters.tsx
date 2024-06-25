@@ -14,10 +14,10 @@ interface BaseInlineFilters {
   resetText?: string;
   debug?: boolean;
   toggle?: FilterTogglerType;
-  onReset: () => void;
-  onChange: (object: any) => void;
   resetButton?: React.ReactNode;
   resetButtonProps?: ButtonProps;
+  onReset: () => void;
+  onChange: (object: any) => void;
 }
 
 interface InlineFiltersWithDefaultValue extends BaseInlineFilters {
@@ -41,9 +41,9 @@ const InlineFilters: React.FC<
     delay = 200,
     resetText,
     toggle,
-    onReset,
     resetButton,
     resetButtonProps = {},
+    onReset,
   } = props;
 
   const [hiddenFilters, setHiddenFilters] = useLocalStorageState<string[]>(
