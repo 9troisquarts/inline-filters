@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.22](https://github.com/9troisquarts/inline-filters/compare/v0.0.21...v0.0.22) (2024-07-07)
+
+
+### Bug Fixes
+
+* Downgrade react ([8d01078](https://github.com/9troisquarts/inline-filters/commit/8d0107835984080659754c0a3306f2d61565d3ac))
+
 ### [0.0.21](https://github.com/9troisquarts/inline-filters/compare/v0.0.20...v0.0.21) (2024-06-25)
 
 
