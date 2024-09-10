@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { DateInputProps, FieldSchema } from '../types';
 import '../index.css';
 import dayjs from '../utils/dayjs';
-import dayjsGenerateConfig from 'rc-picker/lib/generate/dayjs';
 import generatePicker from 'antd/lib/date-picker/generatePicker';
+import dayjsGenerateConfig from 'rc-picker/lib/generate/dayjs';
 
 const DatePicker = generatePicker<DayjsType>(dayjsGenerateConfig)
 

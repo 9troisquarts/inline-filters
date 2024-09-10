@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import './App.css'
 import 'antd/dist/antd.css';
+import '../lib/index.css'
+import { faker } from '@faker-js/faker';
 import { UserOutlined } from '@ant-design/icons';
-import InlineFilters from '../lib/InlineFilters';
+import InlineFilters from '../lib/main';
 import dayjs from '../lib/utils/dayjs';
 import { InlineFilterSchema } from '../lib/types';
+
+
+const clientsOptions = faker.helpers.uniqueArray(faker.person.fullName, 30).map((name: string) => ({ value: name, label: name }));
 
 const onLoadKeywordsOptions = async ({ keywords, matchType }: { keywords: string[], matchType: string }) => {
   console.log('Loading keywords options', keywords, matchType)
@@ -33,6 +38,20 @@ const schema: InlineFilterSchema = [
       type: 'string',
       inputProps: {
         placeholder: 'Rechercher par nom...'
+      }
+    }
+  },
+  {
+    name: 'clients',
+    label: 'Clients',
+    title: 'Clients (multiple)',
+    input: {
+      type: 'select',
+      inputProps: {
+        options: clientsOptions,
+        multiple: true,
+        countBadgeThreshold: 1,
+        searchPlaceholder: 'Rechercher...',
       }
     }
   },
@@ -81,20 +100,6 @@ const schema: InlineFilterSchema = [
     }
   },
   {
-    name: 'clients',
-    label: 'Clients',
-    title: 'Clients (multiple)',
-    input: {
-      type: 'select',
-      inputProps: {
-        options: [{ value: 'HP', label: 'Harry Potter' }, { value: 'DM', label: 'Drago Malefoy' }],
-        multiple: true,
-        searchPlaceholder: 'Rechercher...',
-        selectAllText: 'Tous les clients',
-      }
-    }
-  },
-  {
     name: 'keywords',
     label: 'Mots clés',
     input: {
@@ -118,9 +123,22 @@ const schema: InlineFilterSchema = [
   }
 ]
 
+InlineFilters.configure({
+  locale: 'fr',
+  selectAllText: 'Sélectionner tout',
+  unselectAllText: 'Désélectionner tout',
+  okText: 'Filtrer',
+  countBadgeThreshold: 1,
+})
+
 function App() {
-  const [search, setSearch] = useState({ activeOn: '2023-11-12' })
-  const onReset = () => setSearch({ activeOn: '2023-11-12' })
+  const [search, setSearch] = useState({ activeOn: '2023-11-12', clients: [] })
+  const onReset = () => setSearch({ activeOn: '2023-11-12', clients: [] })
+
+  const onChange = (values) => {
+    console.log('values', values)
+    setSearch(values)
+  }
 
   return (
     <>
@@ -134,7 +152,7 @@ function App() {
           selectAllText: 'Tous les fitlres',
           // icon: <UserOutlined />
         }}
-        onChange={setSearch}
+        onChange={onChange}
         schema={schema}
       />
     </>

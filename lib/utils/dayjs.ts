@@ -8,6 +8,9 @@ import weekday from 'dayjs/plugin/weekday';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import weekYear from 'dayjs/plugin/weekYear';
 import isoWeek from 'dayjs/plugin/isoWeek';
+import 'dayjs/locale/en';
+import 'dayjs/locale/fr';
+import 'dayjs/locale/es';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(advancedFormat);

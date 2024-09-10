@@ -1,18 +1,20 @@
 // @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
-import { FieldSchema, SelectInputProps } from '../types';
+import { Configuration, FieldSchema, OptionType, SelectInputProps } from '../types';
 import SVG from 'react-inlinesvg';
-import { Badge, Checkbox, Input, InputRef, Popover, Space } from 'antd';
+import { Button, Checkbox, Divider, Input, InputRef, Popover, Space } from 'antd';
 import { useSelections } from 'ahooks';
 import scopeSvg from '../icons/scope.svg';
 import '../index.css';
 import filterOption from '../utils/filterOption';
+import Badge from '../components/Badge';
 
 type ValueType = string | string[] | undefined;
 
 type FilterProps = {
   field: FieldSchema & { name: string };
   value?: ValueType;
+  defaultConfig: Configuration;
   onChange: (values: {
     [k: string]: ValueType | ValueType[];
   }) => void;
@@ -38,6 +40,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
   const {
     field,
     value,
+    defaultConfig,
     onChange,
   } = props;
 
@@ -46,7 +49,10 @@ const SelectFilter: React.FC<FilterProps> = props => {
       multiple = false,
       allowSearch = true,
       searchPlaceholder = undefined,
-      selectAllText = 'All',
+      selectAllText,
+      unselectAllText,
+      okText,
+      countBadgeThreshold = 0,
       options = [],
     } = {}
   } = (field?.input || {}) as SelectInputProps;
@@ -78,14 +84,15 @@ const SelectFilter: React.FC<FilterProps> = props => {
   }, [popoverIsOpen])
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target?.value);
+  
   const onSelect = (key: string) => {
     if (multiple) {
       if(internalValue.includes(key)) {
         const nextValues = [...internalValue];
         nextValues.splice(nextValues.indexOf(key), 1)
-        onChange({ [field.name]: nextValues })
+        setSelected(nextValues);
       } else {
-        onChange({[field.name]: [...internalValue, key]})
+        setSelected([...internalValue, key]);
       }
     } else {
       onChange({[field.name]: internalValue.includes(key) ? undefined : key})
@@ -94,16 +101,25 @@ const SelectFilter: React.FC<FilterProps> = props => {
 
   const onSelectAll = () => {
     const nextValues = options.map(o => o.value);
-    onChange({[field.name]: nextValues})
+    setSelected(nextValues);
     selectAll();
   }
 
   const onUnselectAll = () => {
-    onChange({[field.name]: undefined});
+    setSelected(undefined);
     unSelectAll();
   }
 
-  let filteredOptions = options.filter(o => !search || filterOption(search, o) || internalValue.includes(o.value))
+  const onOk = () => {
+    onChange({ [field.name]: internalValue });
+    setPopoverIsOpen(false);
+  }
+
+  const selectedOptions: OptionType[] = options.filter(o => (value || []).includes(o.value));
+  const selectedOptionsValues = selectedOptions.map(o => o.value);
+
+  // let filteredOptions = options.filter(o => (!search || filterOption(search, o) && !selectedOptionsValues.includes(o.value)));
+  let filteredOptions = options.filter(o =>  !selectedOptionsValues.includes(o.value) && (!search || filterOption(search, o)));
   if (search && search.length > 0) filteredOptions = filteredOptions.sort(sortByPresenceInArray(internalValue));
 
   const popoverContent = (
@@ -124,26 +140,67 @@ const SelectFilter: React.FC<FilterProps> = props => {
           className={`wand__inline-filter__search-input ${isFocused || !!search ? 'wand__inline-filter__search-input--is-focused' : ''}`}
         />
       )}
-      <div className="wand__inline-filter__options-container">
-        {multiple && !search && (
-          <div key='select-all' className={`wand__inline-filter__option ${allSelected ? 'wand__inline-filter__option--is-selected' : ''}`} onClick={allSelected ? onUnselectAll : onSelectAll}>
-            <Space>
-              <Checkbox indeterminate={partiallySelected} checked={allSelected} />
-              {selectAllText}
-            </Space>
+      {multiple && !search && !allSelected && (
+        <div className="wand__inline-filter__options-container">
+          <div className='wand__filter-select-toggler'>
+            <div>
+              <a onClick={() => onSelectAll()}>
+                {selectAllText || defaultConfig.selectAllText || 'Tout sélectionner'}
+              </a>
+            </div>
           </div>
+          <Divider className="wand__inline-filter__popover-divider" />
+        </div>
+      )}
+      <div className="wand__inline-filter__options-container">
+        {multiple && selectedOptions && selectedOptions.length > 0 && (
+          <>
+            {selectedOptions.map(o => (
+              <Option
+                key={o.value}
+                option={o}
+                checked={internalValue.includes(o.value)}
+                onSelect={onSelect}
+                showCheck={!!multiple}
+              />
+            ))}
+            <Divider className="wand__inline-filter__popover-divider" />
+          </>
         )}
         {filteredOptions.map(o => (
-          <div key={o.value} className={`wand__inline-filter__option ${internalValue?.includes(o.value) ? 'wand__inline-filter__option--is-selected' : ''}`} onClick={() => onSelect(o.value)}>
-            <Space>
-              {multiple && (
-                <Checkbox checked={internalValue?.includes(o.value)} />
-              )}
-              {o.children || o.label}
-            </Space>
-          </div>
+          <Option
+            key={o.value}
+            option={o}
+            checked={internalValue.includes(o.value)}
+            onSelect={onSelect}
+            showCheck={!!multiple}
+          />
         ))}
       </div>
+      {multiple && (
+        <>
+          <div className="wand__inline-filter__options-container">
+            <Divider className="wand__inline-filter__popover-divider" />
+          </div>
+          <div className="wand__inline-filter__popover-footer">
+            {(allSelected || partiallySelected) && (
+              <div>
+                <a onClick={() => onUnselectAll()}>
+                  {unselectAllText || defaultConfig.unselectAllText || 'Tout désélectionner'}
+                </a>
+              </div>
+            )}
+            <div style={{ marginLeft: 'auto' }}>
+              <Button
+                type="primary"
+                onClick={onOk}
+              >
+                {okText || defaultConfig.okText || 'Rechercher'}
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
     </>
   )
 
@@ -155,25 +212,50 @@ const SelectFilter: React.FC<FilterProps> = props => {
       placement="bottom"
       onOpenChange={setPopoverIsOpen}
       trigger="click"
-      overlayClassName="wand__inline-filter__popover"
+      overlayClassName={`wand__inline-filter__popover ${multiple ? 'wand__inline-filter__with_footer' : ''}`}
     >
-      <div className={`wand__inline-filter__filter ${internalValue.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${internalValue.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
+      <div className={`wand__inline-filter__filter ${selectedOptions.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${selectedOptions.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
         <Space>
           <span className="wand__inline-filter__label">
             {field.label}
-            {internalValue.length > 0 && !multiple && (
+            {selectedOptions.length > 0 && !multiple && (
               <span>
-                &nbsp;:&nbsp;{options.find(o => o.value === internalValue[0])?.label}
+                &nbsp;:&nbsp;{options.find(o => o.value === selectedOptions[0])?.label}
+              </span>
+            )}
+            {selectedOptions.length > 0 && multiple && (
+              <>
+                {selectedOptions.length > countBadgeThreshold ? (
+                  <Badge className="wand__inline-filter__badge" count={selectedOptions.length} />
+                ) : (
+                  <span>
+                    &nbsp;:&nbsp;{selectedOptions.map(o => o.label).join(", ")}
+                  </span>
+                )}
+              </>
+            )}
+            {field.icon && (!selectedOptions || selectedOptions.length === 0) && (
+              <span style={{ marginLeft: 8 }}>
+                {field.icon}
               </span>
             )}
           </span>
-          {internalValue.length > 0 && multiple ? (
-            <Badge className="wand__inline-filter__badge" count={internalValue.length} />
-          ) : field.icon
-          }
         </Space>
       </div>
     </Popover>
+  )
+}
+
+const Option = ({ option, checked, showCheck = false, onSelect }) => {
+  return (
+    <div className={`wand__inline-filter__option ${checked ? 'wand__inline-filter__option--is-selected' : ''}`} onClick={() => onSelect(option.value)}>
+      <Space>
+        {showCheck && (
+          <Checkbox checked={checked} />
+        )}
+        {option.children || option.label}
+      </Space>
+    </div>
   )
 }
 

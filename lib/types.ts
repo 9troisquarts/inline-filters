@@ -3,6 +3,14 @@ import { RangePickerProps } from "antd/lib/date-picker";
 import React from "react";
 import dayjs from "./utils/dayjs";
 
+export type Configuration = {
+  locale: 'fr' | 'en' | 'es';
+  selectAllText?: string;
+  unselectAllText?: string;
+  okText?: string;
+  countBadgeThreshold?: number;
+}
+
 export type OptionType = {
   value: string | number;
   label: string;
@@ -30,10 +38,13 @@ export type SelectInputProps = {
   inputProps?: {
     options: OptionType[];
     multiple?: boolean;
+    countBadgeThreshold?: number;
     allowSearch?: boolean;
+    okText?: string;
     searchPlaceholder?: string;
     noOptionsFound?: string;
     selectAllText?: string;
+    unselectAllText?: string;
     className?: string;
   };
 };

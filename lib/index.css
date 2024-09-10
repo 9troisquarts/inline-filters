@@ -6,7 +6,7 @@
   --wand-filter-radius: 4px;
 }
 
-.wand__inline-filter__filter, .wand__filter-toggler__button{
+.wand__inline-filter__filter, .wand__filter-toggler__button {
   padding: var(--wand-filter-padding);
   border-radius: var(--wand-filter-radius);
   background-color: #FFF;
@@ -20,10 +20,28 @@
   color: var(--wand-filter-color);
 }
 
+.wand__filter-select-toggler {
+  padding: 8px 16px;
+  padding-bottom: 0px;
+}
+
+.wand__filter-select-toggler a {
+  text-decoration: underline;
+  user-select: none;
+}
+
 .wand__filter-toggler__button {
   display: flex;
   align-items: center;
   border-style: dashed !important;
+}
+
+.wand__inline-filter__popover-footer {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 8px;
+  display: flex;
+  align-items: center;
 }
 
 .wand__filter-toggler__icon {
@@ -148,9 +166,25 @@
   width: 100%;
 };
 
-.wand__inline-filter__badge .ant-badge-count{
-  color: var(--wand-filter-color) !important;
+.wand__inline-filter__badge {
+  margin-left: 8px;
+}
+
+.wand__inline-filter__badge .wand_inline-filter__badge-count {
   background-color: var(--wand-filter-option-selected-color) !important;
+  color: var(--wand-filter-color) !important;
+  margin-left: 8px !important;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 20px;
+  white-space: nowrap;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px #fff;
+  z-index: auto;
 }
 
 .wand__inline-filter__popover .ant-popover-inner {
@@ -160,6 +194,14 @@
 
 .wand__inline-filter__popover .ant-popover-inner-content {
   width: 100%;
+}
+
+.wand__inline-filter__with_footer .ant-popover-inner-content {
+  padding-bottom: 0;
+}
+
+.wand__inline-filter__popover-divider {
+  margin: 8px auto;
 }
 
 .wand__inline-filter__datepicker .ant-picker-active-bar {
