@@ -123,6 +123,7 @@ const schema: InlineFilterSchema = [
   }
 ]
 
+// @ts-ignore
 InlineFilters.configure({
   locale: 'fr',
   selectAllText: 'Sélectionner tout',
@@ -135,7 +136,7 @@ function App() {
   const [search, setSearch] = useState({ activeOn: '2023-11-12', clients: [] })
   const onReset = () => setSearch({ activeOn: '2023-11-12', clients: [] })
 
-  const onChange = (values) => {
+  const onChange = (values: any) => {
     console.log('values', values)
     setSearch(values)
   }
