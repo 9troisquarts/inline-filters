@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.23](https://github.com/9troisquarts/inline-filters/compare/v0.0.22...v0.0.23) (2024-09-10)
+
+
+### Features
+
+* Modification de l'ux des filtres à sélection multiple ([3a72722](https://github.com/9troisquarts/inline-filters/commit/3a72722159e57cadf43668fe17d9baa0b0084088))
+
 ### [0.0.22](https://github.com/9troisquarts/inline-filters/compare/v0.0.21...v0.0.22) (2024-07-07)
 
 
