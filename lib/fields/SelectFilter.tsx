@@ -119,7 +119,11 @@ const SelectFilter: React.FC<FilterProps> = props => {
   const selectedOptionsValues = selectedOptions.map(o => o.value);
 
   // let filteredOptions = options.filter(o => (!search || filterOption(search, o) && !selectedOptionsValues.includes(o.value)));
-  let filteredOptions = options.filter(o =>  !selectedOptionsValues.includes(o.value) && (!search || filterOption(search, o)));
+  let filteredOptions = [...options]
+  if (search)
+    filteredOptions = filteredOptions.filter(o => filterOption(search, o));
+  else
+    filteredOptions = filteredOptions.filter(o => !selectedOptionsValues.includes(o.value))
   if (search && search.length > 0) filteredOptions = filteredOptions.sort(sortByPresenceInArray(internalValue));
 
   const popoverContent = (
@@ -153,7 +157,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
         </div>
       )}
       <div className="wand__inline-filter__options-container">
-        {multiple && selectedOptions && selectedOptions.length > 0 && (
+        {(!search || search.length === 0) && multiple && selectedOptions && selectedOptions.length > 0 && (
           <>
             {selectedOptions.map(o => (
               <Option
@@ -183,7 +187,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
             <Divider className="wand__inline-filter__popover-divider" />
           </div>
           <div className="wand__inline-filter__popover-footer">
-            {(allSelected || partiallySelected) && (
+            {(allSelected || partiallySelected) && (!search || search.length === 0) && (
               <div>
                 <a onClick={() => onUnselectAll()}>
                   {unselectAllText || defaultConfig.unselectAllText || 'Tout désélectionner'}

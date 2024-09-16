@@ -56,6 +56,28 @@ const schema: InlineFilterSchema = [
     }
   },
   {
+    name: 'locales',
+    label: 'Langue',
+    input: {
+      type: 'select',
+      inputProps: {
+        options: [
+          {
+            label: 'Anglais',
+            value: '66acd108bb43928b44877467'
+          },
+          {
+            label: 'Français',
+            value: '66acd108bb43928b44877466'
+          }
+        ],
+        multiple: true,
+        countBadgeThreshold: 1,
+        searchPlaceholder: 'Rechercher...',
+      }
+    }
+  },
+  {
     name: 'activeOn',
     label: 'Actif le',
     toggleable: false,
