@@ -331,3 +331,19 @@
   border-radius: 8px;
   transition: background-color 0.3s ease;
 }
+
+.wand__inline-filter__options-group__title {
+  color: #00000073;
+  font-size: 14px;
+  cursor: default;
+  padding: 4px 0;
+}
+
+.wand__inline-filter__options-group {
+  padding: 0 16px;
+}
+
+.wand__inline-filter__options-group .wand__inline-filter__options-container .wand__inline-filter__option {
+  padding-left: 32px;
+  padding-right: 32px;
+}

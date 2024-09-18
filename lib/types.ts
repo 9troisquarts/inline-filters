@@ -11,12 +11,18 @@ export type Configuration = {
   countBadgeThreshold?: number;
 }
 
-export type OptionType = {
-  value: string | number;
+export type OptionWithChildren = {
+  label: string;
+  options: BaseOption[];
+}
+
+export type BaseOption = {
+  value: string;
   label: string;
   children?: React.ReactNode[] | React.ReactNode;
-  options?: OptionType[];
-};
+}
+
+export type OptionType = BaseOption | OptionWithChildren;
 
 export type DateInputProps = {
   type: "date";

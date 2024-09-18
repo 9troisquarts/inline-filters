@@ -1,7 +1,8 @@
 // @ts-nocheck
-import React, { useEffect, useRef, useState } from 'react';
-import { Configuration, FieldSchema, OptionType, SelectInputProps } from '../types';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { BaseOption, Configuration, FieldSchema, OptionType, OptionWithChildren, SelectInputProps } from '../types';
 import SVG from 'react-inlinesvg';
+import { cloneDeep } from 'lodash';
 import { Button, Checkbox, Divider, Input, InputRef, Popover, Space } from 'antd';
 import { useSelections } from 'ahooks';
 import scopeSvg from '../icons/scope.svg';
@@ -20,20 +21,40 @@ type FilterProps = {
   }) => void;
 };
 
-const sortByPresenceInArray = (array: ValueType[]) => (a: any, b: any) => {
-  if (array.includes(a.value) && !array.includes(b.value))
-    return 1;
-  if (!array.includes(a.value) && array.includes(b.value))
-    return -1;
-  return 0;
-}
-
-const castValue = (value?: string | string[]) => {
+const castValue = (value?: ValueType) => {
   if(!value) return [];
 
   if (Array.isArray(value)) return value;
 
   return [value];
+}
+
+const isBaseOption = (option?: OptionType): option is BaseOption => {
+  return (!!option && (option as BaseOption).value !== undefined);
+}
+
+const isOptionWithChildren = (option?: OptionType): option is OptionWithChildren => {
+  return (!!option && (option as OptionWithChildren).options !== undefined);
+}
+
+const filterOptionsBySearch = (options: OptionType[], search: string | undefined, selectedValues: ValueType[], withSelected = 'only') => {
+  const filteredOptions = options.map(o => {
+    if (isOptionWithChildren(o)) {
+      const cloneOption = cloneDeep(o);
+      const filteredSubOptions = filterOptionsBySearch(o.options, search, selectedValues, withSelected).filter(e => !!e);
+      cloneOption.options = (filteredSubOptions || []) as BaseOption[];
+      return cloneOption;
+    } else {
+      let displayed = true;
+      if (search && search.length > 0 && !filterOption(search, o)) displayed = false;
+      if (withSelected === 'except' && selectedValues.includes(o.value)) displayed = false;
+      if (withSelected === 'only' && !selectedValues.includes(o.value)) displayed = false;
+      if (displayed) return o;
+      return undefined;
+    }
+  }).filter(e => !!e);
+
+  return filteredOptions.filter(o => o && (isBaseOption(o) || o.options.length > 0));
 }
 
 const SelectFilter: React.FC<FilterProps> = props => {
@@ -64,7 +85,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
     partiallySelected,
     unSelectAll,
     selectAll
-  } = useSelections<string | number | undefined>(options.map(o => o.value), castValue(value));
+  } = useSelections<ValueType>(options.filter(isBaseOption).map(o => o.value.toString()), castValue(value));
 
   const [search, setSearch] = useState<string | undefined>(undefined);
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
@@ -85,7 +106,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target?.value);
   
-  const onSelect = (key: string) => {
+  const onSelect = (key: ValueType) => {
     if (multiple) {
       if(internalValue.includes(key)) {
         const nextValues = [...internalValue];
@@ -100,13 +121,13 @@ const SelectFilter: React.FC<FilterProps> = props => {
   }
 
   const onSelectAll = () => {
-    const nextValues = options.map(o => o.value);
+    const nextValues = options.filter(isBaseOption).map(o => o.value.toString());
     setSelected(nextValues);
     selectAll();
   }
 
   const onUnselectAll = () => {
-    setSelected(undefined);
+    setSelected([]);
     unSelectAll();
   }
 
@@ -115,16 +136,21 @@ const SelectFilter: React.FC<FilterProps> = props => {
     setPopoverIsOpen(false);
   }
 
-  const selectedOptions: OptionType[] = options.filter(o => (value || []).includes(o.value));
-  const selectedOptionsValues = selectedOptions.map(o => o.value);
+  const {
+    selectedOptions,
+    filteredOptions
+  } = useMemo(() => {
+    return {
+      filteredOptions: filterOptionsBySearch(options, search, Array.isArray(value) ? value : [value], search && search.length > 0 ? 'all' : 'except'),
+      selectedOptions: filterOptionsBySearch(options, search, Array.isArray(value) ? value : [value], 'only')
+    };
+  }, [options, search, Array.isArray(value) ? value.join(',') : value]);
 
-  // let filteredOptions = options.filter(o => (!search || filterOption(search, o) && !selectedOptionsValues.includes(o.value)));
-  let filteredOptions = [...options]
-  if (search)
-    filteredOptions = filteredOptions.filter(o => filterOption(search, o));
-  else
-    filteredOptions = filteredOptions.filter(o => !selectedOptionsValues.includes(o.value))
-  if (search && search.length > 0) filteredOptions = filteredOptions.sort(sortByPresenceInArray(internalValue));
+  const selectedCount = (selectedOptions || []).reduce((acc, o) => {
+    if (isBaseOption(o)) return acc + 1;
+    if (isOptionWithChildren(o)) return acc + o.options.length;
+    return acc;
+  }, 0);
 
   const popoverContent = (
     <>
@@ -157,13 +183,14 @@ const SelectFilter: React.FC<FilterProps> = props => {
         </div>
       )}
       <div className="wand__inline-filter__options-container">
+        
         {(!search || search.length === 0) && multiple && selectedOptions && selectedOptions.length > 0 && (
           <>
             {selectedOptions.map(o => (
               <Option
-                key={o.value}
+                key={isBaseOption(o) ? o.value : o.label}
                 option={o}
-                checked={internalValue.includes(o.value)}
+                selectedValues={internalValue}
                 onSelect={onSelect}
                 showCheck={!!multiple}
               />
@@ -173,14 +200,15 @@ const SelectFilter: React.FC<FilterProps> = props => {
         )}
         {filteredOptions.map(o => (
           <Option
-            key={o.value}
+            key={isBaseOption(o) ? o.value : o.label}
             option={o}
-            checked={internalValue.includes(o.value)}
+            selectedValues={internalValue}
             onSelect={onSelect}
             showCheck={!!multiple}
           />
         ))}
       </div>
+
       {multiple && (
         <>
           <div className="wand__inline-filter__options-container">
@@ -224,13 +252,14 @@ const SelectFilter: React.FC<FilterProps> = props => {
             {field.label}
             {selectedOptions.length > 0 && !multiple && (
               <span>
-                &nbsp;:&nbsp;{options.find(o => o.value === selectedOptions[0])?.label}
+                &nbsp;:&nbsp;
+                {isBaseOption(selectedOptions[0]) ? selectedOptions[0].label : selectedOptions[0].options.map(o => o.label)[0]}
               </span>
             )}
             {selectedOptions.length > 0 && multiple && (
               <>
                 {selectedOptions.length > countBadgeThreshold ? (
-                  <Badge className="wand__inline-filter__badge" count={selectedOptions.length} />
+                  <Badge className="wand__inline-filter__badge" count={selectedCount} />
                 ) : (
                   <span>
                     &nbsp;:&nbsp;{selectedOptions.map(o => o.label).join(", ")}
@@ -238,7 +267,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
                 )}
               </>
             )}
-            {field.icon && (!selectedOptions || selectedOptions.length === 0) && (
+            {field.icon && (!selectedOptions || selectedCount === 0) && (
               <span style={{ marginLeft: 8 }}>
                 {field.icon}
               </span>
@@ -250,9 +279,35 @@ const SelectFilter: React.FC<FilterProps> = props => {
   )
 }
 
-const Option = ({ option, checked, showCheck = false, onSelect }) => {
+const Option = ({ option, selectedValues, showCheck = false, onSelect }: { option: OptionType; selectedValues?: ValueType[]; showCheck: boolean; onSelect: (value: ValueType) => void;}) => {
+  
+  const handleSelect = (opt: OptionType) => {
+    if(isBaseOption(opt)) onSelect(opt.value);
+  }
+
+  if (isOptionWithChildren(option))
+    return (
+      <div className="wand__inline-filter__options-group">
+        <div className='wand__inline-filter__options-group__title'>
+          {option.label}
+        </div>
+        <div className="wand__inline-filter__options-container">
+          {(option.options || []).map(o => (
+            <Option
+              key={o.value}
+              option={o}
+              selectedValues={selectedValues}
+              onSelect={onSelect}
+              showCheck={showCheck}
+            />
+          ))}
+        </div>
+      </div>
+    )
+
+  const checked = selectedValues?.includes(option.value);
   return (
-    <div className={`wand__inline-filter__option ${checked ? 'wand__inline-filter__option--is-selected' : ''}`} onClick={() => onSelect(option.value)}>
+    <div className={`wand__inline-filter__option ${checked ? 'wand__inline-filter__option--is-selected' : ''}`} onClick={() => handleSelect(option)}>
       <Space>
         {showCheck && (
           <Checkbox checked={checked} />

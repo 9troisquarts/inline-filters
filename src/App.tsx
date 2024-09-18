@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from 'react'
 import './App.css'
 import 'antd/dist/antd.css';
@@ -5,7 +6,6 @@ import '../lib/index.css'
 import { faker } from '@faker-js/faker';
 import { UserOutlined } from '@ant-design/icons';
 import InlineFilters from '../lib/main';
-import dayjs from '../lib/utils/dayjs';
 import { InlineFilterSchema } from '../lib/types';
 
 
@@ -24,6 +24,43 @@ const onLoadKeywordsOptions = async ({ keywords, matchType }: { keywords: string
     'Hermione et Harry'
   ]
 }
+
+const marqueByInterest = [
+  {
+    label: 'Harry potter',
+    options: [
+      {
+        label: 'Harry Potter et la chambre des secrets',
+        value: 'Harry Potter et la chambre des secrets'
+      },
+      {
+        label: 'Harry Potter et le prisonnier d\'Azkaban',
+        value: 'Harry Potter et le prisonnier d\'Azkaban'
+      },
+      {
+        label: 'Harry Potter et la coupe de feu',
+        value: 'Harry Potter et la coupe de feu'
+      },
+    ]
+  },
+  {
+    label: 'LOTR',
+    options: [
+      {
+        label: 'Le seigneur des anneaux - La communauté de l\'anneau',
+        value: 'Le seigneur des anneaux - La communauté de l\'anneau'
+      },
+      {
+        label: 'Le seigneur des anneaux - Les deux tours',
+        value: 'Le seigneur des anneaux - Les deux tours'
+      },
+      {
+        label: 'Le seigneur des anneaux - Le retour du roi',
+        value: 'Le seigneur des anneaux - Le retour du roi'
+      },
+    ]
+  }
+]
 
 const schema: InlineFilterSchema = [
   {
@@ -52,6 +89,19 @@ const schema: InlineFilterSchema = [
         multiple: true,
         countBadgeThreshold: 1,
         searchPlaceholder: 'Rechercher...',
+      }
+    }
+  },
+  {
+    name: 'book',
+    label: 'Livre',
+    input: {
+      type: 'select',
+      inputProps: {
+        options: marqueByInterest,
+        multiple: true,
+        countBadgeThreshold: 1,
+        searchPlaceholder: 'Rechercher un livre...',
       }
     }
   },
