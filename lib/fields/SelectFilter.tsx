@@ -57,6 +57,14 @@ const filterOptionsBySearch = (options: OptionType[], search: string | undefined
   return filteredOptions.filter(o => o && (isBaseOption(o) || o.options.length > 0));
 }
 
+const flattenOptions = (options: OptionType[]): BaseOption[] => {
+  return options.reduce((acc, o) => {
+    if(isBaseOption(o)) return [...acc, o];
+    if(isOptionWithChildren(o)) return [...acc, ...flattenOptions(o.options)];
+    return acc;
+  }, [] as BaseOption[]);
+}
+
 const SelectFilter: React.FC<FilterProps> = props => {
   const {
     field,
@@ -85,7 +93,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
     partiallySelected,
     unSelectAll,
     selectAll
-  } = useSelections<ValueType>(options.filter(isBaseOption).map(o => o.value.toString()), castValue(value));
+  } = useSelections<ValueType>(flattenOptions(options).map(o => o.value.toString()), castValue(value));
 
   const [search, setSearch] = useState<string | undefined>(undefined);
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
@@ -121,7 +129,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
   }
 
   const onSelectAll = () => {
-    const nextValues = options.filter(isBaseOption).map(o => o.value.toString());
+    const nextValues = flattenOptions(options).map(o => o.value.toString());
     setSelected(nextValues);
     selectAll();
   }
