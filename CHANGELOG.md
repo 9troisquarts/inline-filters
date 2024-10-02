@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.8](https://github.com/9troisquarts/inline-filters/compare/v1.0.7...v1.0.8) (2024-10-02)
+
+
+### Bug Fixes
+
+* Ajout des options groupés ([69cce8a](https://github.com/9troisquarts/inline-filters/commit/69cce8a588e6e4c1344cc7292de17a681003c1e1))
+* Correction du bouton sélectionner tout ([64c2878](https://github.com/9troisquarts/inline-filters/commit/64c2878b46e5667d4ab765d8c1d1d854bf85556a))
+
 ### [1.0.7](https://github.com/9troisquarts/inline-filters/compare/v1.0.6...v1.0.7) (2024-09-18)
 
 ### [1.0.6](https://github.com/9troisquarts/inline-filters/compare/v1.0.5...v1.0.6) (2024-09-18)
