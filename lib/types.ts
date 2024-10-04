@@ -7,6 +7,7 @@ export type Configuration = {
   locale: 'fr' | 'en' | 'es';
   selectAllText?: string;
   unselectAllText?: string;
+  pullSelectedToTop?: boolean;
   okText?: string;
   countBadgeThreshold?: number;
 }

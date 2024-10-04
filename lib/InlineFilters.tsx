@@ -16,6 +16,7 @@ let config: Configuration = {
   selectAllText: 'Sélectionner tout',
   unselectAllText: 'Désélectionner tout',
   okText: 'Rechercher',
+  pullSelectedToTop: true,
   countBadgeThreshold: 0,
 };
 
@@ -40,11 +41,13 @@ interface BaseInlineFilters {
 interface InlineFiltersWithDefaultValue extends BaseInlineFilters {
   defaultValue: any;
   value?: any;
+  config?: Configuration;
 }
 
 interface InlineFiltersWithValue extends BaseInlineFilters {
   defaultValue?: any;
   value: any;
+  config?: Configuration;
 }
 
 const InlineFilters: React.FC<
@@ -131,6 +134,11 @@ const InlineFilters: React.FC<
         )
     );
 
+  const configuration = {
+    ...config,
+    ...(props.config || {})
+  }
+
   return (
     <ConfigProvider locale={antdLocaleForLocale[config.locale]}>
       <Space style={{ width: "100%" }} wrap>
@@ -140,7 +148,7 @@ const InlineFilters: React.FC<
             <FilterComponent
               key={Array.isArray(field.name) ? field.name.join("--") : field.name}
               field={field}
-              defaultConfig={config}
+              defaultConfig={configuration}
               value={
                 Array.isArray(field.name)
                   ? field.name.reduce((acc: any, name: string) => {

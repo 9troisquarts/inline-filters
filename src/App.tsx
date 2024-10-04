@@ -219,6 +219,9 @@ function App() {
         defaultValue={search}
         onReset={onReset}
         resetText="Réinitialiser les filtres"
+        config={{
+          okText: 'Filtrer',
+        }}
         toggle={{
           key: 'projects',
           text: 'Filtres',

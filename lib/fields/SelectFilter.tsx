@@ -148,9 +148,11 @@ const SelectFilter: React.FC<FilterProps> = props => {
     selectedOptions,
     filteredOptions
   } = useMemo(() => {
+    let alreadySelected = Array.isArray(value) ? value : [value];
+
     return {
-      filteredOptions: filterOptionsBySearch(options, search, Array.isArray(value) ? value : [value], search && search.length > 0 ? 'all' : 'except'),
-      selectedOptions: filterOptionsBySearch(options, search, Array.isArray(value) ? value : [value], 'only')
+      filteredOptions: filterOptionsBySearch(options, search, defaultConfig.pullSelectedToTop ? alreadySelected : [], search && search.length > 0 ? 'all' : 'except'),
+      selectedOptions: filterOptionsBySearch(options, search, alreadySelected, 'only')
     };
   }, [options, search, Array.isArray(value) ? value.join(',') : value]);
 
@@ -191,8 +193,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
         </div>
       )}
       <div className="wand__inline-filter__options-container">
-        
-        {(!search || search.length === 0) && multiple && selectedOptions && selectedOptions.length > 0 && (
+        {(!search || search.length === 0) && defaultConfig.pullSelectedToTop && multiple && selectedOptions && selectedOptions.length > 0 && (
           <>
             {selectedOptions.map(o => (
               <Option
