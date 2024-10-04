@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/9troisquarts/inline-filters/compare/v1.0.8...v1.1.0) (2024-10-04)
+
+
+### Features
+
+* Allow to disable pull to top globally on select filter ([8da1528](https://github.com/9troisquarts/inline-filters/commit/8da15283a42ee92284c5cd8a8f2fdf32963fcf2b))
+
 ### [1.0.8](https://github.com/9troisquarts/inline-filters/compare/v1.0.7...v1.0.8) (2024-10-02)
 
 
