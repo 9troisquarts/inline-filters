@@ -93,7 +93,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
     partiallySelected,
     unSelectAll,
     selectAll
-  } = useSelections<ValueType>(flattenOptions(options).map(o => o.value.toString()), castValue(value));
+  } = useSelections<ValueType>(flattenOptions(options).map(o => o.value?.toString()), castValue(value));
 
   const [search, setSearch] = useState<string | undefined>(undefined);
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
@@ -148,11 +148,11 @@ const SelectFilter: React.FC<FilterProps> = props => {
     selectedOptions,
     filteredOptions
   } = useMemo(() => {
-    let alreadySelected = Array.isArray(value) ? value : [value];
-
+    const alreadySelected = Array.isArray(value) ? value : [value];
+    
     return {
       filteredOptions: filterOptionsBySearch(options, search, defaultConfig.pullSelectedToTop ? alreadySelected : [], search && search.length > 0 ? 'all' : 'except'),
-      selectedOptions: filterOptionsBySearch(options, search, alreadySelected, 'only')
+      selectedOptions: flattenOptions(filterOptionsBySearch(options, search, alreadySelected, 'only'))
     };
   }, [options, search, Array.isArray(value) ? value.join(',') : value]);
 

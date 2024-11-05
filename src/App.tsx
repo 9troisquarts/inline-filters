@@ -41,6 +41,10 @@ const marqueByInterest = [
         label: 'Harry Potter et la coupe de feu',
         value: 'Harry Potter et la coupe de feu'
       },
+      {
+        label: 'Non définit',
+        value: null
+      }
     ]
   },
   {
