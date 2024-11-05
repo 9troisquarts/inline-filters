@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/9troisquarts/inline-filters/compare/v1.1.0...v1.1.1) (2024-11-05)
+
+
+### Bug Fixes
+
+* Allow option without value ([57e575a](https://github.com/9troisquarts/inline-filters/commit/57e575aa05eb94d96d42a2c272cd9ec7b5086482))
+
 ## [1.1.0](https://github.com/9troisquarts/inline-filters/compare/v1.0.8...v1.1.0) (2024-10-04)
 
 
