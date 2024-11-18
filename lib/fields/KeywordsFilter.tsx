@@ -34,6 +34,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
       loadOptions,
       i18n,
       showReset,
+      showCancel,
       defaultMatchType = 'all'
     } = {},
   } = (field.input || {}) as KeywordsInputProps;
@@ -221,15 +222,17 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
           </div>
         )}
         <div className="wand__inline-filter__keywords__popover-footer-right">
-          <Button
-            type="link"
-            onClick={() => {
-              setInternalValue(value || defaultValue)
-              setPopoverIsOpen(false)
-            }}
-          >
-            { i18n?.cancelText || 'Cancel' }
-          </Button>
+          {showCancel && (
+            <Button
+              type="link"
+              onClick={() => {
+                setInternalValue(value || defaultValue)
+                setPopoverIsOpen(false)
+              }}
+            >
+              { i18n?.cancelText || 'Cancel' }
+            </Button>
+          )}
           <Button
             type="primary"
             disabled={internalValue?.keywords?.length === 0}
