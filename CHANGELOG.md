@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/9troisquarts/inline-filters/compare/v1.2.0...v1.2.1) (2024-11-18)
+
+
+### Bug Fixes
+
+* keywords filters badge component change ([d4bab88](https://github.com/9troisquarts/inline-filters/commit/d4bab880c42a20c92f9fe4d67d0c25be3c5401aa))
+
 ## [1.2.0](https://github.com/9troisquarts/inline-filters/compare/v1.1.2...v1.2.0) (2024-11-18)
 
 
