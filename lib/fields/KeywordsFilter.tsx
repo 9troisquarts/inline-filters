@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { FieldSchema, KeywordsInputProps } from '../types';
-import { AutoComplete, Badge, Button, Dropdown, MenuProps, Popover, Select, Space, Typography } from 'antd';
+import { AutoComplete, Button, Dropdown, MenuProps, Popover, Select, Space, Typography } from 'antd';
 import '../index.css';
 import { CloseCircleOutlined, DownOutlined } from '@ant-design/icons';
 import _ from 'lodash'
 import { useDebounce } from 'ahooks';
+import Badge from '../components/Badge';
 
 const { Title } = Typography;
 const { Option } = Select
