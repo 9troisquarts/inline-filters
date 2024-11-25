@@ -1,16 +1,14 @@
-// @ts-nocheck
 import { useDebounceFn, useLocalStorageState } from "ahooks";
 import { Button, ButtonProps, ConfigProvider, Space } from "antd";
-import omit from "lodash/omit";
 import React, { cloneElement, useCallback, useEffect, useMemo, useState } from "react";
 import FilterToggler from "./FilterToggler";
-import { filterForType } from "./_utils";
+import { extractToggledFields, filterForType, isUntoggleable, objectIsPresent } from "./_utils";
 import SelectFilter from "./fields/SelectFilter";
-import { Configuration, FieldSchema, FilterTogglerType, InlineFilterSchema } from "./types";
+import { Configuration, FilterTogglerType, InlineFilterSchema } from "./types";
 import fr_FR from 'antd/lib/locale/fr_FR';
 import en_GB from 'antd/lib/locale/en_GB';
 import es_ES from 'antd/lib/locale/es_ES';
-import { filter, pick } from "lodash";
+import { pick } from "lodash";
 
 let config: Configuration = {
   locale: 'fr',
@@ -20,8 +18,7 @@ let config: Configuration = {
   okText: 'Rechercher',
   pullSelectedToTop: true,
   countBadgeThreshold: 0,
-  allowClear: false,
-  toggleMode: 'hidden'
+  allowClear: false
 };
 
 const antdLocaleForLocale = {
@@ -38,8 +35,8 @@ interface BaseInlineFilters {
   toggle?: FilterTogglerType;
   resetButton?: React.ReactNode;
   resetButtonProps?: ButtonProps;
-  onReset: () => void;
-  onChange: (object: any) => void;
+  onReset?: () => void;
+  onChange: (object: any, value: any) => void;
 }
 
 interface InlineFiltersWithDefaultValue extends BaseInlineFilters {
@@ -54,9 +51,6 @@ interface InlineFiltersWithValue extends BaseInlineFilters {
   config?: Configuration;
 }
 
-const isToggleable = (f: FieldSchema) => f.name && (f.toggleable || f.toggleable === undefined)
-const isUntoggleable = (field: FieldSchema) => !isToggleable(field);
-
 const InlineFilters: React.FC<
   InlineFiltersWithDefaultValue | InlineFiltersWithValue
 > = (props) => {
@@ -64,7 +58,6 @@ const InlineFilters: React.FC<
     schema,
     value = undefined,
     defaultValue = {},
-    debug = false,
     delay = 200,
     resetText,
     toggle,
@@ -85,10 +78,10 @@ const InlineFilters: React.FC<
   const fieldsToPick = useMemo(() => {
     if (!toggle) return [];
     if (toggle?.mode === "visible") {
-      return schema.filter(isUntoggleable).flatMap(f => f.name).concat(filtersToggled || []);
+      return schema.filter(isUntoggleable).flatMap(f => f.name).concat(filtersToggled || []).flatMap(f => f.split("//="));
     } else {
       const filtersToGet = schema.flatMap(f => f.name);
-      return filtersToGet.filter(f => !filtersToggled?.includes(f));
+      return filtersToGet.filter(f => !filtersToggled?.includes(f)).flatMap(f => f.split("//="));
     }
   }, [filtersToggled?.join('//=')]);
 
@@ -100,15 +93,15 @@ const InlineFilters: React.FC<
   }
 
   const { run: handleChange } = useDebounceFn(
-    (values) => {
-      if (props.onChange) props.onChange(values);
+    (values, value) => {
+      if (props.onChange) props.onChange(values, value);
     },
     { wait: delay }
   );
 
-  const submitValues = (values: any) => {
+  const submitValues = (values: any, value: any) => {
     setInternalValue(values);
-    handleChange(values);
+    handleChange(values, value);
   };
 
   const onFilterChange = useCallback((values: any) => {
@@ -123,19 +116,28 @@ const InlineFilters: React.FC<
       )
     }
     submitValues(
-      nextValues
+      nextValues,
+      values
     );
   }, [internalValue, fieldsToPick]);
 
-  const onFilterToggleChange = (names: string[]) => {
+  const onFilterToggleChange = (names: string[], deletedKeys: string[]) => {
     setFiltersToggled(names);
+    const nullifiedKeys = deletedKeys.reduce((acc, key) => {
+      // @ts-ignore
+      acc[key] = undefined;
+      return acc;
+    }, {});
+
     const nextValues = pick(
       {
         ...internalValue,
+        ...nullifiedKeys,
       },
-      toggle ? names : []
+      toggle ? names.concat(deletedKeys || []) : []
     );
     submitValues(
+      nextValues,
       nextValues
     );
   };
@@ -145,39 +147,12 @@ const InlineFilters: React.FC<
       {resetText || "Reset filters"}
     </Button>
   ) 
+  // @ts-ignore
   if (resetButton) resetComponent = cloneElement(resetButton, { onClick: handleReset });
-
-
-  const extractToggledFields = (schema: InlineFilterSchema, currentValue: string[], mode: 'default' | 'hidden' | 'visible') => {
-    if( mode === 'default' || mode === 'hidden') {
-      if (currentValue && currentValue.length > 0) {
-        return schema.filter(
-          (f) =>
-            (f.toggleable !== undefined && !f.toggleable) ||
-            !currentValue.includes(
-              Array.isArray(f.name) ? f.name.join("//=") : f.name
-            )
-        );
-      }
-    }
-    if(mode === 'visible') {
-      if (currentValue && currentValue.length > 0) {
-        return schema.filter(
-          (f) =>
-            (f.toggleable !== undefined && !f.toggleable) ||
-            currentValue.includes(
-              Array.isArray(f.name) ? f.name.join("//=") : f.name
-            )
-        );
-      }
-      return schema.filter(f => f && f.toggleable !== undefined && !f.toggleable);
-    }
-    return schema;
-  }
 
   const fields = useMemo(() => {
     if(toggle) {
-      return extractToggledFields(schema, filtersToggled, toggle?.mode || 'default')
+      return extractToggledFields(schema, filtersToggled || [], toggle?.mode || 'default')
     }
     return schema;
   }, [schema, filtersToggled]);
@@ -207,6 +182,7 @@ const InlineFilters: React.FC<
           return (
             <FilterComponent
               key={Array.isArray(field.name) ? field.name.join("--") : field.name}
+              // @ts-ignore
               field={field}
               defaultConfig={configuration}
               value={
@@ -224,7 +200,7 @@ const InlineFilters: React.FC<
         {toggle && (toggle?.position !== "before") && (
           ToggleComponent
         )}
-        {onReset && resetComponent}
+        {onReset && (internalValue && objectIsPresent(internalValue)) && resetComponent}
       </Space>
     </ConfigProvider>
   );

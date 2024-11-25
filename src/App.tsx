@@ -211,12 +211,12 @@ function App() {
   const [search, setSearch] = useState({ activeOn: '2023-11-12', clients: [] })
   const onReset = () => setSearch({ activeOn: '2023-11-12', clients: [] })
 
-  const onChange = (values: any) => {
+  const onChange = (values: any, value: any) => {
     console.log('values: ', values)
     setSearch(values)
   }
 
-  const onVisibleModeChange = (values: any) => {
+  const onVisibleModeChange = (values: any, value: any) => {
     console.log('visible values: ', values)
     setSearch(values)
   }
@@ -254,8 +254,10 @@ function App() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem'}}>
-      {configs.map(({ title, props }) => (
-        <div>
+      {configs.map(({ title, props }, index) => (
+        <div
+          key={`config-${index}`}
+        >
           <h2>{title}</h2>
           <InlineFilters
             defaultValue={search}

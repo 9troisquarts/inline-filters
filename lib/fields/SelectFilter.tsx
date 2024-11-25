@@ -148,6 +148,11 @@ const SelectFilter: React.FC<FilterProps> = props => {
     setPopoverIsOpen(false);
   }
 
+  const onReset = (e) => {
+    e.stopPropagation();
+    onChange({ [field.name]: undefined });
+  }
+
   const {
     selectedOptions,
     filteredOptions
@@ -291,7 +296,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
                 <Tooltip
                   title={clearFilterText || defaultConfig.clearFilterText || 'Clear'}
                 >
-                  <a className="wand__inline-filter-close-mark" onClick={() => onChange({ [field.name]: undefined })}>
+                  <a className="wand__inline-filter-close-mark" onClick={onReset}>
                     <SVG src={circleXMark} height={14} />
                   </a>
                 </Tooltip>

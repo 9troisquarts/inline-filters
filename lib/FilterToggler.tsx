@@ -6,11 +6,12 @@ import SVG from "react-inlinesvg";
 import filterSvg from "./icons/filter.svg";
 import "./index.css";
 import { FilterTogglerType, InlineFilterSchema } from "./types";
+import { isToggleable } from "./_utils";
 
 type FilterTogglerProps = {
   schema: InlineFilterSchema;
   value?: string[];
-  onChange: (keys: string[]) => void;
+  onChange: (keys: string[], deletedKeys: string[]) => void;
 } & FilterTogglerType;
 
 const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
@@ -28,9 +29,7 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
     onChange,
   } = props;
 
-  const toggleableFilters = schema.filter(
-    (f) => f.name && (f.toggleable || f.toggleable === undefined)
-  );
+  const toggleableFilters = schema.filter(isToggleable);
 
   const totalToggleableFilters = toggleableFilters.length;
   let selectedCount = value?.length || 0;
@@ -66,7 +65,8 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
 
   const onOk = () => {
     setPopoverIsOpen(false);
-    onChange(selected);
+    const deletedKeys = value?.filter((k) => !selected.includes(k))?.flatMap(k => k.split("//=")) || [];
+    onChange(selected, deletedKeys);
   };
 
   const checkAllOption = mode === "visible" ? allSelected : noneSelected;
