@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/9troisquarts/inline-filters/compare/v2.0.0...v2.1.0) (2024-11-25)
+
+
+### Features
+
+* Le bouton reset est caché si aucune valeur n'est sélectionnée ([9253598](https://github.com/9troisquarts/inline-filters/commit/9253598ab27b0fa49d61cae3c646bde0bd2fb047))
+
 ## [2.0.0](https://github.com/9troisquarts/inline-filters/compare/v1.2.1...v2.0.0) (2024-11-25)
 
 
