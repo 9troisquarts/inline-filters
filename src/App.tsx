@@ -4,7 +4,7 @@ import './App.css'
 import 'antd/dist/antd.css';
 import '../lib/index.css'
 import { faker } from '@faker-js/faker';
-import { UserOutlined } from '@ant-design/icons';
+import { PlusOutlined, UserOutlined } from '@ant-design/icons';
 import InlineFilters from '../lib/main';
 import { InlineFilterSchema } from '../lib/types';
 
@@ -91,7 +91,6 @@ const schema: InlineFilterSchema = [
       inputProps: {
         options: clientsOptions,
         multiple: true,
-        countBadgeThreshold: 1,
         searchPlaceholder: 'Rechercher...',
       }
     }
@@ -104,7 +103,6 @@ const schema: InlineFilterSchema = [
       inputProps: {
         options: marqueByInterest,
         multiple: true,
-        countBadgeThreshold: 1,
         searchPlaceholder: 'Rechercher un livre...',
       }
     }
@@ -205,7 +203,8 @@ InlineFilters.configure({
   selectAllText: 'Sélectionner tout',
   unselectAllText: 'Désélectionner tout',
   okText: 'Filtrer',
-  countBadgeThreshold: 1,
+  countBadgeThreshold: 3,
+  allowClear: true,
 })
 
 function App() {
@@ -213,29 +212,64 @@ function App() {
   const onReset = () => setSearch({ activeOn: '2023-11-12', clients: [] })
 
   const onChange = (values: any) => {
-    console.log('values', values)
+    console.log('values: ', values)
     setSearch(values)
   }
 
-  return (
-    <>
-      <InlineFilters
-        defaultValue={search}
-        onReset={onReset}
-        resetText="Réinitialiser les filtres"
-        config={{
-          okText: 'Filtrer',
-        }}
-        toggle={{
+  const onVisibleModeChange = (values: any) => {
+    console.log('visible values: ', values)
+    setSearch(values)
+  }
+
+  const configs = [
+    {
+      title: "Mode cacher des filtres (default)",
+      props: {
+        toggle: {
           key: 'projects',
           text: 'Filtres',
-          selectAllText: 'Tous les fitlres',
-          // icon: <UserOutlined />
-        }}
-        onChange={onChange}
-        schema={schema}
-      />
-    </>
+          selectAllText: 'Tous les filtres',
+          showCount: true,
+        },
+        onChange,
+      },
+    },
+    {
+      title: "Mode ajout de filtre",
+      props: {
+        toggle: {
+          position: 'before',
+          key: 'projects',
+          mode: 'visible',
+          text: 'Ajouter un filtre',
+          selectAllText: 'Tous les filtres',
+          iconPosition: 'before',
+          icon: <PlusOutlined />,
+          showCount: true,
+        },
+        onChange: onVisibleModeChange,
+      }
+    }
+  ]
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem'}}>
+      {configs.map(({ title, props }) => (
+        <div>
+          <h2>{title}</h2>
+          <InlineFilters
+            defaultValue={search}
+            onReset={onReset}
+            resetText="Réinitialiser les filtres"
+            config={{
+              okText: 'Filtrer',
+            }}
+            schema={schema}
+            {...props}
+          />
+        </div>
+      ))}
+    </div>
   )
 }
 

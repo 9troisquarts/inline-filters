@@ -3,9 +3,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BaseOption, Configuration, FieldSchema, OptionType, OptionWithChildren, SelectInputProps } from '../types';
 import SVG from 'react-inlinesvg';
 import { cloneDeep } from 'lodash';
-import { Button, Checkbox, Divider, Input, InputRef, Popover, Space } from 'antd';
+import { Button, Checkbox, Divider, Input, InputRef, Popover, Space, Tooltip } from 'antd';
 import { useSelections } from 'ahooks';
 import scopeSvg from '../icons/scope.svg';
+import circleXMark from '../icons/circle-xmark.svg';
 import '../index.css';
 import filterOption from '../utils/filterOption';
 import Badge from '../components/Badge';
@@ -80,11 +81,14 @@ const SelectFilter: React.FC<FilterProps> = props => {
       searchPlaceholder = undefined,
       selectAllText,
       unselectAllText,
+      clearFilterText,
       okText,
-      countBadgeThreshold = 0,
       options = [],
     } = {}
   } = (field?.input || {}) as SelectInputProps;
+
+  const countBadgeThreshold = (field?.input as SelectInputProps)?.inputProps?.countBadgeThreshold || defaultConfig.countBadgeThreshold || 0;
+  const allowClear = (field?.input as SelectInputProps)?.inputProps?.allowClear || defaultConfig.allowClear || false;
 
   const {
     selected: internalValue,
@@ -280,6 +284,18 @@ const SelectFilter: React.FC<FilterProps> = props => {
               <span style={{ marginLeft: 8 }}>
                 {field.icon}
               </span>
+            )}
+            {allowClear && selectedOptions.length > 0 && (
+              <>
+                &nbsp;
+                <Tooltip
+                  title={clearFilterText || defaultConfig.clearFilterText || 'Clear'}
+                >
+                  <a className="wand__inline-filter-close-mark" onClick={() => onChange({ [field.name]: undefined })}>
+                    <SVG src={circleXMark} height={14} />
+                  </a>
+                </Tooltip>
+              </>
             )}
           </span>
         </Space>

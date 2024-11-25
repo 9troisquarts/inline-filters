@@ -2,22 +2,26 @@
 import { useDebounceFn, useLocalStorageState } from "ahooks";
 import { Button, ButtonProps, ConfigProvider, Space } from "antd";
 import omit from "lodash/omit";
-import React, { cloneElement, useEffect, useState } from "react";
+import React, { cloneElement, useCallback, useEffect, useMemo, useState } from "react";
 import FilterToggler from "./FilterToggler";
 import { filterForType } from "./_utils";
 import SelectFilter from "./fields/SelectFilter";
-import { Configuration, FilterTogglerType, InlineFilterSchema } from "./types";
+import { Configuration, FieldSchema, FilterTogglerType, InlineFilterSchema } from "./types";
 import fr_FR from 'antd/lib/locale/fr_FR';
 import en_GB from 'antd/lib/locale/en_GB';
 import es_ES from 'antd/lib/locale/es_ES';
+import { filter, pick } from "lodash";
 
 let config: Configuration = {
   locale: 'fr',
   selectAllText: 'Sélectionner tout',
+  clearFilterText: "Clear",
   unselectAllText: 'Désélectionner tout',
   okText: 'Rechercher',
   pullSelectedToTop: true,
   countBadgeThreshold: 0,
+  allowClear: false,
+  toggleMode: 'hidden'
 };
 
 const antdLocaleForLocale = {
@@ -50,6 +54,9 @@ interface InlineFiltersWithValue extends BaseInlineFilters {
   config?: Configuration;
 }
 
+const isToggleable = (f: FieldSchema) => f.name && (f.toggleable || f.toggleable === undefined)
+const isUntoggleable = (field: FieldSchema) => !isToggleable(field);
+
 const InlineFilters: React.FC<
   InlineFiltersWithDefaultValue | InlineFiltersWithValue
 > = (props) => {
@@ -66,14 +73,24 @@ const InlineFilters: React.FC<
     onReset,
   } = props;
 
-  const [hiddenFilters, setHiddenFilters] = useLocalStorageState<string[]>(
-    toggle?.key ? `${toggle?.key}-filters` : "filter-toggle"
+  const [filtersToggled, setFiltersToggled] = useLocalStorageState<string[]>(
+    toggle?.key ? `${toggle?.key}-${toggle?.mode}-filters` : `filter-${toggle?.mode}-toggle`
   );
   const [internalValue, setInternalValue] = useState(value || defaultValue);
 
   useEffect(() => {
     if(value) setInternalValue(value);
   }, [value]);
+
+  const fieldsToPick = useMemo(() => {
+    if (!toggle) return [];
+    if (toggle?.mode === "visible") {
+      return schema.filter(isUntoggleable).flatMap(f => f.name).concat(filtersToggled || []);
+    } else {
+      const filtersToGet = schema.flatMap(f => f.name);
+      return filtersToGet.filter(f => !filtersToggled?.includes(f));
+    }
+  }, [filtersToggled?.join('//=')]);
 
   const handleReset = () => {
     if (onReset) {
@@ -94,26 +111,32 @@ const InlineFilters: React.FC<
     handleChange(values);
   };
 
-  const onFilterChange = (values: any) =>
-    submitValues(
-      omit(
-        {
-          ...internalValue,
-          ...values,
-        },
-        toggle ? hiddenFilters : []
+  const onFilterChange = useCallback((values: any) => {
+    let nextValues = {
+      ...internalValue,
+      ...values,
+    };
+    if (toggle) {
+      nextValues = pick(
+        nextValues,
+        toggle ? fieldsToPick : []
       )
+    }
+    submitValues(
+      nextValues
     );
+  }, [internalValue, fieldsToPick]);
 
   const onFilterToggleChange = (names: string[]) => {
-    setHiddenFilters(names);
+    setFiltersToggled(names);
+    const nextValues = pick(
+      {
+        ...internalValue,
+      },
+      toggle ? names : []
+    );
     submitValues(
-      omit(
-        {
-          ...internalValue,
-        },
-        toggle ? names : []
-      )
+      nextValues
     );
   };
 
@@ -124,24 +147,61 @@ const InlineFilters: React.FC<
   ) 
   if (resetButton) resetComponent = cloneElement(resetButton, { onClick: handleReset });
 
-  let fields = schema;
-  if (toggle && hiddenFilters && hiddenFilters.length > 0)
-    fields = fields.filter(
-      (f) =>
-        (f.toggleable !== undefined && !f.toggleable) ||
-        !hiddenFilters.includes(
-          Array.isArray(f.name) ? f.name.join("//=") : f.name
-        )
-    );
+
+  const extractToggledFields = (schema: InlineFilterSchema, currentValue: string[], mode: 'default' | 'hidden' | 'visible') => {
+    if( mode === 'default' || mode === 'hidden') {
+      if (currentValue && currentValue.length > 0) {
+        return schema.filter(
+          (f) =>
+            (f.toggleable !== undefined && !f.toggleable) ||
+            !currentValue.includes(
+              Array.isArray(f.name) ? f.name.join("//=") : f.name
+            )
+        );
+      }
+    }
+    if(mode === 'visible') {
+      if (currentValue && currentValue.length > 0) {
+        return schema.filter(
+          (f) =>
+            (f.toggleable !== undefined && !f.toggleable) ||
+            currentValue.includes(
+              Array.isArray(f.name) ? f.name.join("//=") : f.name
+            )
+        );
+      }
+      return schema.filter(f => f && f.toggleable !== undefined && !f.toggleable);
+    }
+    return schema;
+  }
+
+  const fields = useMemo(() => {
+    if(toggle) {
+      return extractToggledFields(schema, filtersToggled, toggle?.mode || 'default')
+    }
+    return schema;
+  }, [schema, filtersToggled]);
 
   const configuration = {
     ...config,
     ...(props.config || {})
   }
 
+  const ToggleComponent = toggle ? (
+    <FilterToggler
+      schema={schema}
+      value={filtersToggled}
+      onChange={onFilterToggleChange}
+      {...(toggle || {})}
+    />
+  ) : undefined;
+
   return (
     <ConfigProvider locale={antdLocaleForLocale[config.locale]}>
       <Space style={{ width: "100%" }} wrap>
+        {toggle && (toggle?.position === "before") && (
+          ToggleComponent
+        )}
         {fields.map((field) => {
           const FilterComponent = filterForType[field.input.type] || SelectFilter;
           return (
@@ -161,13 +221,8 @@ const InlineFilters: React.FC<
             />
           );
         })}
-        {toggle && (
-          <FilterToggler
-            schema={schema}
-            value={hiddenFilters}
-            onChange={onFilterToggleChange}
-            {...(toggle || {})}
-          />
+        {toggle && (toggle?.position !== "before") && (
+          ToggleComponent
         )}
         {onReset && resetComponent}
       </Space>

@@ -16,12 +16,15 @@ type FilterTogglerProps = {
 const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
   const {
     schema,
+    iconPosition = "before",
     icon = <SVG src={filterSvg} height={15} />,
     text = "Filters",
     selectAllText = "All filters",
     cancelText = "Cancel",
     okText = "Valider",
     value,
+    showCount = false,
+    mode = 'default',
     onChange,
   } = props;
 
@@ -29,13 +32,18 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
     (f) => f.name && (f.toggleable || f.toggleable === undefined)
   );
 
+  const totalToggleableFilters = toggleableFilters.length;
+  let selectedCount = value?.length || 0;
+  if (mode !== 'visible') selectedCount = totalToggleableFilters - selectedCount;
+
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
   const {
-    selected: hiddenFilters,
+    selected,
     unSelect,
     setSelected,
     select,
     noneSelected,
+    allSelected,
     partiallySelected,
     unSelectAll,
     selectAll,
@@ -47,7 +55,7 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
   );
 
   const onSelect = (key: string) => {
-    if (hiddenFilters.includes(key)) unSelect(key);
+    if (selected.includes(key)) unSelect(key);
     else select(key);
   };
 
@@ -58,8 +66,10 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
 
   const onOk = () => {
     setPopoverIsOpen(false);
-    onChange(hiddenFilters);
+    onChange(selected);
   };
+
+  const checkAllOption = mode === "visible" ? allSelected : noneSelected;
 
   const popoverContent = (
     <>
@@ -67,32 +77,34 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
         <div
           key="select-all"
           className={`wand__inline-filter__option ${
-            noneSelected ? "wand__inline-filter__option--is-selected" : ""
+            checkAllOption ? "wand__inline-filter__option--is-selected" : ""
           }`}
           onClick={noneSelected ? selectAll : unSelectAll}
         >
           <Space>
             <Checkbox
               indeterminate={partiallySelected}
-              checked={noneSelected}
+              checked={checkAllOption}
             />
             {selectAllText}
           </Space>
         </div>
         {toggleableFilters.map((f) => {
           const fieldName = Array.isArray(f.name) ? f.name.join("//=") : f.name;
+          let checked = selected?.includes(fieldName)
+          if (mode !== 'visible') checked = !checked;
           return (
             <div
               key={fieldName}
               className={`wand__inline-filter__option ${
-                !hiddenFilters?.includes(fieldName)
+                checked
                   ? "wand__inline-filter__option--is-selected"
                   : ""
               }`}
               onClick={(e) => onSelect(fieldName)}
             >
               <Space>
-                <Checkbox checked={!hiddenFilters?.includes(fieldName)} />
+                <Checkbox checked={checked} />
                 {f.icon}
                 {f.title || f.label}
               </Space>
@@ -125,8 +137,22 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
     >
       <div className="wand__filter-toggler__button">
         <Space>
+          {(icon && iconPosition && iconPosition === "before") && (
+            <span className="wand__filter-toggler__icon">
+              {icon}
+            </span>
+          )}
           {text}
-          <span className="wand__filter-toggler__icon">{icon}</span>
+          {(icon && iconPosition && iconPosition === "after") && (
+            <span className="wand__filter-toggler__icon">
+              {icon}
+            </span>
+          )}
+          {showCount && (
+            <span className="wand__filter-toggler__count">
+              {selectedCount} / {totalToggleableFilters}
+            </span>
+          )}
         </Space>
       </div>
     </Popover>

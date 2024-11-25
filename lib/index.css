@@ -100,6 +100,8 @@
 
 .wand__inline-filter__label {
   white-space: nowrap;
+  display: flex;
+  align-items: center;
 }
 
 .wand__inline-filter__option {
@@ -185,6 +187,22 @@
   border-radius: 10px;
   box-shadow: 0 0 0 1px #fff;
   z-index: auto;
+}
+
+.wand__inline-filter-close-mark {
+  height: 1rem;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.wand__inline-filter-close-mark svg {
+  transition: fill 0.3s ease;
+  fill: rgba(205, 205, 205, 0.6);
+}
+
+.wand__inline-filter-close-mark:hover svg {
+  fill: var(--wand-filter-color);
 }
 
 .wand__inline-filter__popover .ant-popover-inner {

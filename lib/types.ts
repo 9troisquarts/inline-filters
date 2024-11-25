@@ -7,8 +7,10 @@ export type Configuration = {
   locale: 'fr' | 'en' | 'es';
   selectAllText?: string;
   unselectAllText?: string;
+  clearFilterText?: string;
   pullSelectedToTop?: boolean;
   okText?: string;
+  allowClear?: boolean;
   countBadgeThreshold?: number;
 }
 
@@ -46,6 +48,7 @@ export type SelectInputProps = {
     options: OptionType[];
     multiple?: boolean;
     countBadgeThreshold?: number;
+    allowClear?: boolean;
     allowSearch?: boolean;
     okText?: string;
     searchPlaceholder?: string;
@@ -136,8 +139,12 @@ export type InlineFilterSchema = Array<FieldSchema>;
 export type FilterTogglerType = {
   key: string;
   text?: string;
+  showCount?: boolean;
+  position?: 'default' | 'before' | 'after';
+  mode?: 'default' | 'hidden' | 'visible';
   selectAllText?: string;
   cancelText?: string;
   okText?: string;
   icon?: React.ReactNode | string;
+  iconPosition?: 'before' | 'after';
 };
