@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/9troisquarts/inline-filters/compare/v1.2.1...v2.0.0) (2024-11-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Ajout de divers possibilités de customisation du sélecteur de filtre
+
+### Features
+
+* Ajout de divers possibilités de customisation du sélecteur de filtre ([fb0b180](https://github.com/9troisquarts/inline-filters/commit/fb0b180acd63f11beb96cbb29eb92c739d60f77d))
+
+
+### Bug Fixes
+
+* Changement de la séparation vers un point virgule ([4ed16f8](https://github.com/9troisquarts/inline-filters/commit/4ed16f81e29f569072d3dd023523f5204fea2b2f))
+
 ### [1.2.1](https://github.com/9troisquarts/inline-filters/compare/v1.2.0...v1.2.1) (2024-11-18)
 
 
