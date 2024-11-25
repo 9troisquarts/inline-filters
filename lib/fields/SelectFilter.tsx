@@ -271,7 +271,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
                   <Badge className="wand__inline-filter__badge" count={selectedCount} />
                 ) : (
                   <span>
-                    &nbsp;:&nbsp;{selectedOptions.map(o => o.label).join(", ")}
+                    &nbsp;:&nbsp;{selectedOptions.map(o => o.label).join("; ")}
                   </span>
                 )}
               </>
