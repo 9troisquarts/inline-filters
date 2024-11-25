@@ -32,7 +32,7 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
   const toggleableFilters = schema.filter(isToggleable);
 
   const totalToggleableFilters = toggleableFilters.length;
-  let selectedCount = value?.length || 0;
+  let selectedCount = (value || []).filter((k) => toggleableFilters.some((f) => Array.isArray(f.name) ? f.name.join("//=") === k : f.name === k)).length;
   if (mode !== 'visible') selectedCount = totalToggleableFilters - selectedCount;
 
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);

@@ -67,7 +67,10 @@ const InlineFilters: React.FC<
   } = props;
 
   const [filtersToggled, setFiltersToggled] = useLocalStorageState<string[]>(
-    toggle?.key ? `${toggle?.key}-${toggle?.mode}-filters` : `filter-${toggle?.mode}-toggle`
+    toggle?.key ? `${toggle?.key}-${toggle?.mode}-filters` : `filter-${toggle?.mode}-toggle`,
+    {
+      defaultValue: toggle?.defaultValue || [],
+    }
   );
   const [internalValue, setInternalValue] = useState(value || defaultValue);
 

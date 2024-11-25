@@ -246,6 +246,7 @@ function App() {
           iconPosition: 'before',
           icon: <PlusOutlined />,
           showCount: true,
+          defaultValue: ['book'],
         },
         onChange: onVisibleModeChange,
       }
