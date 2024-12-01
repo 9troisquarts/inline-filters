@@ -148,6 +148,11 @@ const SelectFilter: React.FC<FilterProps> = props => {
     setPopoverIsOpen(false);
   }
 
+  const handleOpenChange = (visible: boolean) => {
+    setPopoverIsOpen(visible);
+    if(!visible) onOk();
+  }
+
   const onReset = (e) => {
     e.stopPropagation();
     onChange({ [field.name]: undefined });
@@ -260,7 +265,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
       open={popoverIsOpen}
       content={popoverContent}
       placement="bottom"
-      onOpenChange={setPopoverIsOpen}
+      onOpenChange={handleOpenChange}
       trigger="click"
       overlayClassName={`wand__inline-filter__popover ${multiple ? 'wand__inline-filter__with_footer' : ''}`}
     >

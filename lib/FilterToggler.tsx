@@ -1,9 +1,9 @@
-// @ts-nocheck
 import { useSelections } from "ahooks";
-import { Button, Checkbox, Popover, Space } from "antd";
-import React, { useState } from "react";
+import { Button, Checkbox, Input, InputRef, Popover, Space } from "antd";
+import React, { useEffect, useRef, useState } from "react";
 import SVG from "react-inlinesvg";
 import filterSvg from "./icons/filter.svg";
+import scopeSvg from './icons/scope.svg';
 import "./index.css";
 import { FilterTogglerType, InlineFilterSchema } from "./types";
 import { isToggleable } from "./_utils";
@@ -24,26 +24,31 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
     cancelText = "Cancel",
     okText = "Valider",
     value,
+    allowSearch = true,
     showCount = false,
     mode = 'default',
     onChange,
   } = props;
 
-  const toggleableFilters = schema.filter(isToggleable);
+  const selectRef = useRef<InputRef>(null);
+  const [search, setSearch] = useState<string | undefined>(undefined);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
 
+    const toggleableFilters = schema.filter(isToggleable);
   const totalToggleableFilters = toggleableFilters.length;
   let selectedCount = (value || []).filter((k) => toggleableFilters.some((f) => Array.isArray(f.name) ? f.name.join("//=") === k : f.name === k)).length;
   if (mode !== 'visible') selectedCount = totalToggleableFilters - selectedCount;
-
+  
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
+
   const {
     selected,
-    unSelect,
-    setSelected,
-    select,
     noneSelected,
     allSelected,
     partiallySelected,
+    unSelect,
+    setSelected,
+    select,
     unSelectAll,
     selectAll,
   } = useSelections(
@@ -52,6 +57,12 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
     ),
     value || []
   );
+
+  useEffect(() => {
+    if (popoverIsOpen) setSelected(value || []);
+  }, [popoverIsOpen])
+
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target?.value);
 
   const onSelect = (key: string) => {
     if (selected.includes(key)) unSelect(key);
@@ -71,8 +82,29 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
 
   const checkAllOption = mode === "visible" ? allSelected : noneSelected;
 
+  let options = toggleableFilters;
+  if (search && search.length > 0) {
+    options = toggleableFilters.filter((f) => {
+      return f.label?.toLowerCase()?.includes(search.toLowerCase()) || f.title?.toLowerCase()?.includes(search.toLowerCase());
+    });
+  }
   const popoverContent = (
     <>
+      {allowSearch && (
+        <Input
+          ref={selectRef}
+          value={search}
+          onChange={onSearchChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          addonBefore={(
+            <div className="wand__inline-filter__search-input__icon-wrapper">
+              <SVG src={scopeSvg} height={15} />
+            </div>
+          )}
+          className={`wand__inline-filter__search-input ${isFocused || !!search ? 'wand__inline-filter__search-input--is-focused' : ''}`}
+        />
+      )}
       <div className="wand__inline-filter__options-container">
         <div
           key="select-all"
@@ -89,7 +121,7 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
             {selectAllText}
           </Space>
         </div>
-        {toggleableFilters.map((f) => {
+        {options.map((f) => {
           const fieldName = Array.isArray(f.name) ? f.name.join("//=") : f.name;
           let checked = selected?.includes(fieldName)
           if (mode !== 'visible') checked = !checked;
@@ -101,7 +133,7 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
                   ? "wand__inline-filter__option--is-selected"
                   : ""
               }`}
-              onClick={(e) => onSelect(fieldName)}
+              onClick={() => onSelect(fieldName)}
             >
               <Space>
                 <Checkbox checked={checked} />

@@ -140,6 +140,7 @@ export type FilterTogglerType = {
   key: string;
   text?: string;
   showCount?: boolean;
+  allowSearch?: boolean;
   defaultValue?: string[];
   position?: 'default' | 'before' | 'after';
   mode?: 'default' | 'hidden' | 'visible';
