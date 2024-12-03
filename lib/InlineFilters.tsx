@@ -1,6 +1,6 @@
 import { useDebounceFn, useLocalStorageState } from "ahooks";
 import { Button, ButtonProps, ConfigProvider, Space } from "antd";
-import React, { cloneElement, useCallback, useEffect, useMemo, useState } from "react";
+import React, { cloneElement, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FilterToggler from "./FilterToggler";
 import { extractToggledFields, filterForType, isUntoggleable, objectIsPresent } from "./_utils";
 import SelectFilter from "./fields/SelectFilter";
@@ -8,7 +8,7 @@ import { Configuration, FilterTogglerType, InlineFilterSchema } from "./types";
 import fr_FR from 'antd/lib/locale/fr_FR';
 import en_GB from 'antd/lib/locale/en_GB';
 import es_ES from 'antd/lib/locale/es_ES';
-import { pick } from "lodash";
+import { isEqual, pick } from "lodash";
 
 let config: Configuration = {
   locale: 'fr',
@@ -72,26 +72,15 @@ const InlineFilters = <T, >(props: InlineFiltersWithDefaultValue<T> | InlineFilt
   );
   const [internalValue, setInternalValue] = useState(value || defaultValue);
 
-  useEffect(() => {
-    if(value) setInternalValue(value);
-  }, [value]);
-
   const fieldsToPick = useMemo(() => {
     if (!toggle) return [];
     if (toggle?.mode === "visible") {
-      return schema.filter(isUntoggleable).flatMap(f => f.name).concat(filtersToggled || []).flatMap(f => f.split("//="));
+      return schema.filter(isUntoggleable).flatMap(f => f.name).concat(filtersToggled || []).flatMap((f) => f.split("//="));
     } else {
       const filtersToGet = schema.flatMap(f => f.name);
       return filtersToGet.filter(f => !filtersToggled?.includes(f)).flatMap(f => f.split("//="));
     }
   }, [filtersToggled?.join('//=')]);
-
-  const handleReset = () => {
-    if (onReset) {
-      if (!value) setInternalValue({});
-      onReset();
-    }
-  }
 
   const { run: handleChange } = useDebounceFn(
     (values, value) => {
@@ -116,32 +105,31 @@ const InlineFilters = <T, >(props: InlineFiltersWithDefaultValue<T> | InlineFilt
         toggle ? fieldsToPick : []
       )
     }
-    submitValues(
-      nextValues,
-      values
-    );
+    if (!isEqual(nextValues, internalValue))
+      submitValues(
+        nextValues,
+        values
+      );
   }, [internalValue, fieldsToPick]);
 
-  const onFilterToggleChange = (names: string[], deletedKeys: string[]) => {
-    setFiltersToggled(names);
-    const nullifiedKeys = deletedKeys.reduce((acc, key) => {
-      // @ts-ignore
-      acc[key] = undefined;
-      return acc;
-    }, {});
+  const onFilterToggleChange = useCallback((toggleableNames: string[]) => {
+    setFiltersToggled(toggleableNames);
+  }, [internalValue, fieldsToPick]);
 
-    const nextValues = pick(
-      {
-        ...internalValue,
-        ...nullifiedKeys,
-      },
-      toggle ? names.concat(deletedKeys || []) : []
-    );
-    submitValues(
-      nextValues,
-      nextValues
-    );
-  };
+  useEffect(() => {
+    onFilterChange({});
+  }, [fieldsToPick])
+
+  useEffect(() => {
+    if(value) setInternalValue(value);
+  }, [value]);
+
+  const handleReset = () => {
+    if (onReset) {
+      if (!value) setInternalValue({});
+      onReset();
+    }
+  }
 
   let resetComponent = (
     <Button type="text" {...resetButtonProps} onClick={handleReset}>
