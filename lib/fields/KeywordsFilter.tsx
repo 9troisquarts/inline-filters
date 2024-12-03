@@ -16,7 +16,7 @@ type ValueType = {
 }
 
 type FilterProps = {
-  field: FieldSchema & { name: string };
+  field: FieldSchema<any> & { name: string };
   value?: ValueType;
   onChange: (values: {
     [k: string]: ValueType | undefined

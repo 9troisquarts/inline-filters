@@ -4,7 +4,7 @@ import { Input } from 'antd';
 import '../index.css';
 
 type FilterProps = {
-  field: FieldSchema & { name: string };
+  field: FieldSchema<any> & { name: string };
   value?: string;
   onChange: (values: {
     [k: string]: string | undefined | null;

@@ -1,6 +1,6 @@
 import { useDebounceFn, useLocalStorageState } from "ahooks";
 import { Button, ButtonProps, ConfigProvider, Space } from "antd";
-import React, { cloneElement, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { cloneElement, useCallback, useEffect, useMemo, useState } from "react";
 import FilterToggler from "./FilterToggler";
 import { extractToggledFields, filterForType, isUntoggleable, objectIsPresent } from "./_utils";
 import SelectFilter from "./fields/SelectFilter";
@@ -27,7 +27,7 @@ const antdLocaleForLocale = {
   es: es_ES,
 };
 
-type BaseInlineFilters<T> = {
+type BaseInlineFilters<T extends Record<string, any>> = {
   schema: InlineFilterSchema<T>;
   delay?: number;
   resetText?: string;
@@ -39,19 +39,19 @@ type BaseInlineFilters<T> = {
   onChange: (object: T, value: T) => void;
 }
 
-type InlineFiltersWithDefaultValue<T> = {
+type InlineFiltersWithDefaultValue<T extends Record<string, any>> = {
   defaultValue: T;
   value?: T;
   config?: Configuration;
 } & BaseInlineFilters<T>;
 
-type InlineFiltersWithValue<T> = {
+type InlineFiltersWithValue<T extends Record<string, any>> = {
   defaultValue?: T;
   value: T;
   config?: Configuration;
 } & BaseInlineFilters<T>;
 
-const InlineFilters = <T, >(props: InlineFiltersWithDefaultValue<T> | InlineFiltersWithValue<T>) => {
+const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWithDefaultValue<T> | InlineFiltersWithValue<T>) => {
   const {
     schema,
     value = undefined,
@@ -70,15 +70,15 @@ const InlineFilters = <T, >(props: InlineFiltersWithDefaultValue<T> | InlineFilt
       defaultValue: toggle?.defaultValue || [],
     }
   );
-  const [internalValue, setInternalValue] = useState(value || defaultValue);
+  const [internalValue, setInternalValue] = useState<T>((value || defaultValue) as T);
 
   const fieldsToPick = useMemo(() => {
     if (!toggle) return [];
     if (toggle?.mode === "visible") {
-      return schema.filter(isUntoggleable).flatMap(f => f.name).concat(filtersToggled || []).flatMap((f) => f.split("//="));
+      return schema.filter(isUntoggleable).flatMap(f => f.name).concat(filtersToggled || []).flatMap((f) => f.toString().split("//="));
     } else {
       const filtersToGet = schema.flatMap(f => f.name);
-      return filtersToGet.filter(f => !filtersToggled?.includes(f)).flatMap(f => f.split("//="));
+      return filtersToGet.filter(f => !filtersToggled?.includes(f.toString())).flatMap(f => f.toString().split("//="));
     }
   }, [filtersToggled?.join('//=')]);
 
@@ -126,7 +126,7 @@ const InlineFilters = <T, >(props: InlineFiltersWithDefaultValue<T> | InlineFilt
 
   const handleReset = () => {
     if (onReset) {
-      if (!value) setInternalValue({});
+      if (!value) setInternalValue({} as T);
       onReset();
     }
   }

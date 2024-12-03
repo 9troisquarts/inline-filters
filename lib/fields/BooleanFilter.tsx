@@ -4,7 +4,7 @@ import { FieldSchema } from '../types';
 import '../index.css';
 
 type FilterProps = {
-  field: FieldSchema & { name: string };
+  field: FieldSchema<any> & { name: string };
   value?: boolean;
   onChange: (values: {
     [k: string]: boolean | undefined | null;

@@ -14,7 +14,7 @@ import Badge from '../components/Badge';
 type ValueType = string | string[] | undefined;
 
 type FilterProps = {
-  field: FieldSchema & { name: string };
+  field: FieldSchema<any> & { name: string };
   value?: ValueType;
   defaultConfig: Configuration;
   onChange: (values: {

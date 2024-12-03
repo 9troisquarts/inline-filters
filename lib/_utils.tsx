@@ -11,8 +11,8 @@ const renderDate = () => {
   return <Space>Render date</Space>;
 };
 
-export const isToggleable = (f: FieldSchema) => f.name && (f.toggleable || f.toggleable === undefined)
-export const isUntoggleable = (field: FieldSchema) => !isToggleable(field);
+export const isToggleable = (f: FieldSchema<any>) => f.name && (f.toggleable || f.toggleable === undefined)
+export const isUntoggleable = (field: FieldSchema<any>) => !isToggleable(field);
 export const objectIsPresent = (obj: any) => {
   return obj && typeof obj === "object" && Object.keys(obj).some((key) => !!obj[key]);
 }
@@ -26,14 +26,14 @@ export const renderValueForType = {
   date: renderDate,
 };
 
-export const extractToggledFields = (schema: InlineFilterSchema, currentValue: string[], mode: 'default' | 'hidden' | 'visible') => {
+export const extractToggledFields = (schema: InlineFilterSchema<any>, currentValue: string[], mode: 'default' | 'hidden' | 'visible') => {
   if( mode === 'default' || mode === 'hidden') {
     if (currentValue && currentValue.length > 0) {
       return schema.filter(
         (f) =>
           (f.toggleable !== undefined && !f.toggleable) ||
           !currentValue.includes(
-            Array.isArray(f.name) ? f.name.join("//=") : f.name
+            Array.isArray(f.name) ? f.name.join("//=") : f.name.toString()
           )
       );
     }
@@ -44,7 +44,7 @@ export const extractToggledFields = (schema: InlineFilterSchema, currentValue: s
         (f) =>
           (f.toggleable !== undefined && !f.toggleable) ||
           currentValue.includes(
-            Array.isArray(f.name) ? f.name.join("//=") : f.name
+            Array.isArray(f.name) ? f.name.join("//=") : f.name.toString()
           )
       );
     }

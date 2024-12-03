@@ -9,7 +9,7 @@ import { FilterTogglerType, InlineFilterSchema } from "./types";
 import { isToggleable } from "./_utils";
 
 type FilterTogglerProps = {
-  schema: InlineFilterSchema;
+  schema: InlineFilterSchema<any>;
   value?: string[];
   onChange: (keys: string[], deletedKeys: string[]) => void;
 } & FilterTogglerType;
@@ -77,6 +77,7 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
   const onOk = () => {
     setPopoverIsOpen(false);
     const deletedKeys = value?.filter((k) => !selected.includes(k))?.flatMap(k => k.split("//=")) || [];
+    // @ts-ignore
     onChange(selected, deletedKeys);
   };
 

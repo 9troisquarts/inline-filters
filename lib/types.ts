@@ -124,17 +124,18 @@ export type FieldType = {
   defaultValue?: unknown;
 } & FieldItemType;
 
-export type FieldSchema<T> =
+// @ts-ignore
+export type FieldSchema<T extends Record<string, any>> =
   | ({
-      name: keyof T;
+      name: string;
     } & FieldType)
   | ({
-      name: Array<keyof T>;
+      name: Array<string>;
     } & FieldItemType & {
         input: DatePickerInputProps;
       });
 
-export type InlineFilterSchema<T> = Array<FieldSchema<T>>;
+export type InlineFilterSchema<T extends Record<string, any>> = Array<FieldSchema<T>>;
 
 export type FilterTogglerType = {
   key: string;
