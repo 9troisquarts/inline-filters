@@ -27,8 +27,8 @@ const antdLocaleForLocale = {
   es: es_ES,
 };
 
-interface BaseInlineFilters {
-  schema: InlineFilterSchema;
+type BaseInlineFilters<T> = {
+  schema: InlineFilterSchema<T>;
   delay?: number;
   resetText?: string;
   debug?: boolean;
@@ -36,24 +36,22 @@ interface BaseInlineFilters {
   resetButton?: React.ReactNode;
   resetButtonProps?: ButtonProps;
   onReset?: () => void;
-  onChange: (object: any, value: any) => void;
+  onChange: (object: T, value: T) => void;
 }
 
-interface InlineFiltersWithDefaultValue extends BaseInlineFilters {
-  defaultValue: any;
-  value?: any;
+type InlineFiltersWithDefaultValue<T> = {
+  defaultValue: T;
+  value?: T;
   config?: Configuration;
-}
+} & BaseInlineFilters<T>;
 
-interface InlineFiltersWithValue extends BaseInlineFilters {
-  defaultValue?: any;
-  value: any;
+type InlineFiltersWithValue<T> = {
+  defaultValue?: T;
+  value: T;
   config?: Configuration;
-}
+} & BaseInlineFilters<T>;
 
-const InlineFilters: React.FC<
-  InlineFiltersWithDefaultValue | InlineFiltersWithValue
-> = (props) => {
+const InlineFilters = <T, >(props: InlineFiltersWithDefaultValue<T> | InlineFiltersWithValue<T>) => {
   const {
     schema,
     value = undefined,

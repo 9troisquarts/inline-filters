@@ -211,12 +211,12 @@ function App() {
   const [search, setSearch] = useState({ activeOn: '2023-11-12', clients: [] })
   const onReset = () => setSearch({ activeOn: '2023-11-12', clients: [] })
 
-  const onChange = (values: any, value: any) => {
+  const onChange = (values: any) => {
     console.log('values: ', values)
     setSearch(values)
   }
 
-  const onVisibleModeChange = (values: any, value: any) => {
+  const onVisibleModeChange = (values: any) => {
     console.log('visible values: ', values)
     setSearch(values)
   }

@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BaseOption, Configuration, FieldSchema, OptionType, OptionWithChildren, SelectInputProps } from '../types';
 import SVG from 'react-inlinesvg';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { Button, Checkbox, Divider, Input, InputRef, Popover, Space, Tooltip } from 'antd';
 import { useSelections } from 'ahooks';
 import scopeSvg from '../icons/scope.svg';
@@ -150,7 +150,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
 
   const handleOpenChange = (visible: boolean) => {
     setPopoverIsOpen(visible);
-    if(!visible) onOk();
+    if(!visible && !isEqual(props?.value, internalValue)) onOk();
   }
 
   const onReset = (e) => {
