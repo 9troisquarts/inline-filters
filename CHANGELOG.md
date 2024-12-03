@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/9troisquarts/inline-filters/compare/v2.3.0...v2.4.0) (2024-12-03)
+
+
+### Features
+
+* Amélioration des submit si les valeurs de filtre ne changent pas ([919e7c9](https://github.com/9troisquarts/inline-filters/commit/919e7c91f3cd02571842d1af8f44aa4fbad38e10))
+* Fermer un filtre ne provoque plus un submit du formulaire si la valeur ne change pas ([d70e60e](https://github.com/9troisquarts/inline-filters/commit/d70e60e0b9ca9e25c599c1ed5a7c4ebca87e8eef))
+
 ## [2.3.0](https://github.com/9troisquarts/inline-filters/compare/v2.2.0...v2.3.0) (2024-12-02)
 
 
