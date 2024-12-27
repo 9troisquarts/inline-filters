@@ -28,7 +28,7 @@ const antdLocaleForLocale = {
 };
 
 type BaseInlineFilters<T extends Record<string, any>> = {
-  schema: InlineFilterSchema<T>;
+  schema: InlineFilterSchema;
   delay?: number;
   resetText?: string;
   debug?: boolean;

@@ -14,7 +14,7 @@ import Badge from '../components/Badge';
 type ValueType = string | string[] | undefined;
 
 type FilterProps = {
-  field: FieldSchema<any> & { name: string };
+  field: FieldSchema & { name: string };
   value?: ValueType;
   defaultConfig: Configuration;
   onChange: (values: {
@@ -160,17 +160,19 @@ const SelectFilter: React.FC<FilterProps> = props => {
 
   const {
     selectedOptions,
-    filteredOptions
+    filteredOptions,
+    currentOptions
   } = useMemo(() => {
     const alreadySelected = Array.isArray(value) ? value : [value];
     
     return {
       filteredOptions: filterOptionsBySearch(options, search, defaultConfig.pullSelectedToTop ? alreadySelected : [], search && search.length > 0 ? 'all' : 'except'),
-      selectedOptions: flattenOptions(filterOptionsBySearch(options, search, alreadySelected, 'only'))
+      selectedOptions: flattenOptions(filterOptionsBySearch(options, search, alreadySelected, 'only')),
+      currentOptions: flattenOptions(filterOptionsBySearch(options, undefined, alreadySelected, 'only')),
     };
   }, [options, search, Array.isArray(value) ? value.join(',') : value]);
 
-  const selectedCount = (selectedOptions || []).reduce((acc, o) => {
+  const selectedCount = (currentOptions || []).reduce((acc, o) => {
     if (isBaseOption(o)) return acc + 1;
     if (isOptionWithChildren(o)) return acc + o.options.length;
     return acc;
@@ -269,33 +271,33 @@ const SelectFilter: React.FC<FilterProps> = props => {
       trigger="click"
       overlayClassName={`wand__inline-filter__popover ${multiple ? 'wand__inline-filter__with_footer' : ''}`}
     >
-      <div className={`wand__inline-filter__filter ${selectedOptions.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${selectedOptions.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
+      <div className={`wand__inline-filter__filter ${currentOptions.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${currentOptions.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
         <Space>
           <span className="wand__inline-filter__label">
             {field.label}
-            {selectedOptions.length > 0 && !multiple && (
+            {currentOptions.length > 0 && !multiple && (
               <span>
                 &nbsp;:&nbsp;
-                {isBaseOption(selectedOptions[0]) ? selectedOptions[0].label : selectedOptions[0].options.map(o => o.label)[0]}
+                {isBaseOption(currentOptions[0]) ? currentOptions[0].label : currentOptions[0].options.map(o => o.label)[0]}
               </span>
             )}
-            {selectedOptions.length > 0 && multiple && (
+            {selectedCount > 0 && multiple && (
               <>
-                {selectedOptions.length > countBadgeThreshold ? (
+                {currentOptions.length > countBadgeThreshold ? (
                   <Badge className="wand__inline-filter__badge" count={selectedCount} />
                 ) : (
                   <span>
-                    &nbsp;:&nbsp;{selectedOptions.map(o => o.label).join("; ")}
+                    &nbsp;:&nbsp;{currentOptions.map(o => o.label).join("; ")}
                   </span>
                 )}
               </>
             )}
-            {field.icon && (!selectedOptions || selectedCount === 0) && (
+            {field.icon && (!currentOptions || selectedCount === 0) && (
               <span style={{ marginLeft: 8 }}>
                 {field.icon}
               </span>
             )}
-            {allowClear && selectedOptions.length > 0 && (
+            {allowClear && currentOptions.length > 0 && (
               <>
                 &nbsp;
                 <Tooltip

@@ -8,7 +8,7 @@ import dayjs from '../utils/dayjs';
 const DatePicker = generatePicker<dayjs.Dayjs>(dayjsGenerateConfig);
 
 type FilterProps = {
-  field: FieldSchema<any> & { name: string };
+  field: FieldSchema & { name: string };
   value?: dayjs.Dayjs | string;
   onChange: (values: {
     [k: string]: dayjs.Dayjs | string | undefined | null;

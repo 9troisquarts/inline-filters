@@ -11,7 +11,7 @@ const DatePicker = generatePicker<DayjsType>(dayjsGenerateConfig)
 const { RangePicker } = DatePicker;
 
 type FilterProps = {
-  field: FieldSchema<any>;
+  field: FieldSchema;
   value: any;
   onChange: (values: any) => void;
 };
