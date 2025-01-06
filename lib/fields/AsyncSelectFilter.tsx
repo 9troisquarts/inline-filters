@@ -76,10 +76,6 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
   };
 
   const onSelect = (option: BaseOption) => {
-    console.log('option', option)
-    console.log('internalValue', internalValue)
-    console.log(internalValue?.some(o => o.value === option.value))
-    console.log(internalValue.filter(o => o.value !== option.value))
     if (internalValue?.some(o => o.value === option.value)) {
       setSelected(internalValue.filter(o => o.value !== option.value));
     } else {
