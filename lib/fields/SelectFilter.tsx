@@ -319,7 +319,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
 const Option = ({ option, selectedValues, showCheck = false, onSelect }: { option: OptionType; selectedValues?: ValueType[]; showCheck: boolean; onSelect: (value: ValueType) => void;}) => {
   
   const handleSelect = (opt: OptionType) => {
-    if(isBaseOption(opt)) onSelect(opt.value);
+    if(isBaseOption(opt)) onSelect(opt.value, opt);
   }
 
   if (isOptionWithChildren(option))

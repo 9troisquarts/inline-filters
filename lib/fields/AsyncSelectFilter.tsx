@@ -1,45 +1,23 @@
 import { Input, Divider, Button, InputRef, Popover, Checkbox, Space, Tooltip, Badge } from "antd";
-import { FieldSchema, Configuration, OptionType, BaseOption, AsyncSelectInputProps } from "../types";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { FieldSchema, Configuration, BaseOption, AsyncSelectInputProps } from "../types";
+import { useEffect, useRef, useState } from "react";
 import scopeSvg from '../icons/scope.svg';
 import SVG from 'react-inlinesvg';
 import { useDebounce, useSelections } from "ahooks";
 import circleXMark from '../icons/circle-xmark.svg';
 import '../index.css';
 import { isEqual, set } from "lodash";
-import filterOption from "../utils/filterOption";
 
-type ValueType = string | string[] | undefined;
+type ValueType = string | number;
 
 type FilterProps = {
   field: FieldSchema & { name: string };
-  value?: ValueType;
+  value?: BaseOption[];
   defaultConfig: Configuration;
   onChange: (values: {
-    [k: string]: ValueType | ValueType[];
+    [k: string]: BaseOption | BaseOption[] | undefined;
   }) => void;
 };
-
-const castValue = (value?: ValueType) => {
-  if(!value) return [];
-
-  if (Array.isArray(value)) return value;
-
-  return [value];
-}
-
-const filterOptionsBySearch = (options: BaseOption[], search: string | undefined, selectedValues: ValueType[], withSelected = 'only') => {
-  const filteredOptions = options.map(o => {
-      let displayed = true;
-      if (search && search.length > 0 && !filterOption(search, o)) displayed = false;
-      if (withSelected === 'except' && selectedValues.includes(o.value)) displayed = false;
-      if (withSelected === 'only' && !selectedValues.includes(o.value)) displayed = false;
-      if (displayed) return o;
-      return undefined;
-  }).filter(e => !!e);
-
-  return filteredOptions
-}
 
 const AsyncSelectFilter: React.FC<FilterProps> = props => {
   const {
@@ -57,8 +35,6 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
       defaultOptionsCount = 20,
       multiple = false,
       searchPlaceholder = undefined,
-      selectAllText,
-      unselectAllText,
       clearFilterText,
       okText
     } = {} as AsyncSelectInputProps['inputProps'],
@@ -68,35 +44,19 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
   const allowClear = inputConfig?.inputProps?.allowClear || defaultConfig.allowClear || false;
   const [search, setSearch] = useState<string | undefined>(undefined);
   const debouncedSearch = useDebounce(search, { wait: 200 })
-  const [searchResults, setSearchResults] = useState<BaseOption[]>([])
-  const [cachedOptions, setCachedOptions] = useState<BaseOption[]>([]);
+  const [options, setOptions] = useState<BaseOption[]>([])
+  const [cachedOptions, setCachedOptions] = useState<{ [k: string]: BaseOption[]}>({});
 
   const {
     selected: internalValue,
-    setSelected,
-    allSelected,
-    partiallySelected,
-    unSelectAll,
-    selectAll
-  } = useSelections<ValueType>(searchResults.map(o => o.value?.toString()), castValue(value));
+    setSelected
+  } = useSelections<BaseOption>([]);
 
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target?.value);
   const selectRef = useRef<InputRef>(null);
-
-  const onSelectAll = () => {
-    const nextValues = searchResults.map(o => o.value.toString());
-    setSelected(nextValues);
-    selectAll();
-  }
-
-  const onUnselectAll = () => {
-    setSelected([]);
-    setCachedOptions([]);
-    unSelectAll();
-  }
 
   const onOk = () => {
     onChange({ [field.name]: internalValue });
@@ -105,7 +65,6 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
 
   const onReset = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCachedOptions([]);
     onChange({ [field.name]: undefined });
   }
 
@@ -116,46 +75,48 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
     }
   };
 
-  const {
-    selectedOptions,
-    filteredOptions,
-  } = useMemo(() => {
-    const alreadySelected = Array.isArray(value) ? value : [value];
-
-    return {
-      filteredOptions: filterOptionsBySearch(searchResults, search, defaultConfig.pullSelectedToTop ? alreadySelected : [], search && search.length > 0 ? 'all' : 'except'),
-      selectedOptions: filterOptionsBySearch(searchResults, search, alreadySelected, 'only'),
-    };
-  }, [defaultConfig.pullSelectedToTop, search, searchResults, value]);
-
-  const onSelect = (key: ValueType) => {
-    if (internalValue.includes(key)) {
-      const nextValues = [...internalValue];
-      nextValues.splice(nextValues.indexOf(key), 1);
-      setSelected(nextValues);
-      setCachedOptions(cachedOptions.filter(o => o.value !== key));
+  const onSelect = (option: BaseOption) => {
+    console.log('option', option)
+    console.log('internalValue', internalValue)
+    console.log(internalValue?.some(o => o.value === option.value))
+    console.log(internalValue.filter(o => o.value !== option.value))
+    if (internalValue?.some(o => o.value === option.value)) {
+      setSelected(internalValue.filter(o => o.value !== option.value));
     } else {
-      setSelected([...internalValue, key]);
-      const selectedOption = searchResults.find(o => o.value === key);
-      if (selectedOption && !cachedOptions.some(o => o.value === key)) {
-        setCachedOptions([...cachedOptions, selectedOption]);
-      }
+      setSelected([...internalValue, option]);
     }
   };
 
   useEffect(() => {
+    if(selectRef && selectRef.current)  {
+      setTimeout(() => {
+        if(selectRef.current) selectRef.current.select();
+      }, 0)
+    }
+  }, [popoverIsOpen])
+
+  useEffect(() => {
     if (debouncedSearch !== '' && debouncedSearch !== undefined) {
-      loadOptions(debouncedSearch).then((results: BaseOption[]) => {
-        setSearchResults(results)
-      })
+      if (cachedOptions[debouncedSearch]) {
+        setOptions(cachedOptions[debouncedSearch]);
+      } else {
+        loadOptions(debouncedSearch).then((results: BaseOption[]) => {
+          setCachedOptions((prev) => set(prev, debouncedSearch, results));
+          setOptions(results)
+        })
+      }
     } else if (popoverIsOpen) {
       // Fetch default options when the popover is opened
-      loadOptions('')
-        .then((results: BaseOption[]) => {
-          setSearchResults(results.slice(0, defaultOptionsCount))
-        });
+      if (cachedOptions['']) {
+        setOptions(cachedOptions['']);
+      } else {
+        loadOptions('')
+          .then((results: BaseOption[]) => {
+            setOptions(results.slice(0, defaultOptionsCount))
+          });
+      }
     }
-  }, [debouncedSearch, defaultOptionsCount, loadOptions, popoverIsOpen])
+  }, [cachedOptions, debouncedSearch, defaultOptionsCount, loadOptions, popoverIsOpen])
 
   const popoverContent = (
     <>
@@ -173,26 +134,14 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
         )}
         className={`wand__inline-filter__search-input ${isFocused || !!search ? 'wand__inline-filter__search-input--is-focused' : ''}`}
       />
-      {multiple && !search && !allSelected && (
-        <div className="wand__inline-filter__options-container">
-          <div className='wand__filter-select-toggler'>
-            <div>
-              <a onClick={() => onSelectAll()}>
-                {selectAllText || defaultConfig.selectAllText || 'Tout sélectionner'}
-              </a>
-            </div>
-          </div>
-          <Divider className="wand__inline-filter__popover-divider" />
-        </div>
-      )}
       <div className="wand__inline-filter__options-container">
-        {(!search || search.length === 0) && defaultConfig.pullSelectedToTop && multiple && selectedOptions && selectedOptions.length > 0 && (
+        {(!search || search.length === 0) && defaultConfig.pullSelectedToTop && multiple && (
           <>
-            {cachedOptions.map(o => (
+            {value?.map(o => (
               <Option
-                key={o.value}
+                key={`selected-${o.value}`}
                 option={o}
-                selectedValues={internalValue}
+                selectedValues={internalValue.map(o => o.value)}
                 onSelect={onSelect}
                 showCheck={!!multiple}
               />
@@ -200,11 +149,11 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
             <Divider className="wand__inline-filter__popover-divider" />
           </>
         )}
-        {filteredOptions.map(o => (
+        {options.map(o => (
           <Option
             key={o.value}
             option={o}
-            selectedValues={internalValue}
+            selectedValues={internalValue.map(o => o.value)}
             onSelect={onSelect}
             showCheck={!!multiple}
           />
@@ -216,13 +165,6 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
             <Divider className="wand__inline-filter__popover-divider" />
           </div>
           <div className="wand__inline-filter__popover-footer">
-            {(allSelected || partiallySelected) && (!search || search.length === 0) && (
-              <div>
-                <a onClick={() => onUnselectAll()}>
-                  {unselectAllText || defaultConfig.unselectAllText || 'Tout désélectionner'}
-                </a>
-              </div>
-            )}
             <div style={{ marginLeft: 'auto' }}>
               <Button
                 type="primary"
@@ -247,27 +189,27 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
       trigger="click"
       overlayClassName={`wand__inline-filter__popover ${multiple ? 'wand__inline-filter__with_footer' : ''}`}
     >
-      <div className={`wand__inline-filter__filter ${cachedOptions.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${cachedOptions.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
+      <div className={`wand__inline-filter__filter ${value && value.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${internalValue.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
         <Space>
           <span className="wand__inline-filter__label">
             {field.label}
-            {cachedOptions.length > 0 && multiple && (
+            {value && value.length > 0 && multiple && (
               <>
-                {cachedOptions.length > countBadgeThreshold ? (
-                  <Badge className="wand__inline-filter__badge" count={internalValue.length} />
+                {value.length > countBadgeThreshold ? (
+                  <Badge className="wand__inline-filter__badge" count={value.length} />
                 ) : (
                   <span>
-                    &nbsp;:&nbsp;{cachedOptions.map(o => o.label).join("; ")}
+                    &nbsp;:&nbsp;{value.map(o => o.label).join("; ")}
                   </span>
                 )}
               </>
             )}
-            {field.icon && (!cachedOptions || cachedOptions.length === 0) && (
+            {field.icon && (!value || value.length === 0) && (
               <span style={{ marginLeft: 8 }}>
                 {field.icon}
               </span>
             )}
-            {allowClear && cachedOptions.length > 0 && (
+            {allowClear && value && value.length > 0 && (
               <>
                 &nbsp;
                 <Tooltip
@@ -286,10 +228,10 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
   )
 }
 
-const Option = ({ option, selectedValues, showCheck = false, onSelect }: { option: BaseOption; selectedValues?: ValueType[]; showCheck: boolean; onSelect: (value: ValueType) => void;}) => {
+const Option = ({ option, selectedValues, showCheck = false, onSelect }: { option: BaseOption; selectedValues?: ValueType[]; showCheck: boolean; onSelect: (value: BaseOption) => void;}) => {
 
   const handleSelect = (opt: BaseOption) => {
-    onSelect(opt.value)
+    onSelect(opt)
   }
 
   const checked = selectedValues?.includes(option.value);
@@ -302,7 +244,7 @@ const Option = ({ option, selectedValues, showCheck = false, onSelect }: { optio
         {option.children || option.label}
       </Space>
     </div>
-  )
+  ) 
 }
 
 export default AsyncSelectFilter

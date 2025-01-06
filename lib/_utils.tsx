@@ -27,7 +27,7 @@ export const renderValueForType = {
   date: renderDate,
 };
 
-export const extractToggledFields = (schema: InlineFilterSchema<any>, currentValue: string[], mode: 'default' | 'hidden' | 'visible') => {
+export const extractToggledFields = (schema: InlineFilterSchema, currentValue: string[], mode: 'default' | 'hidden' | 'visible') => {
   if( mode === 'default' || mode === 'hidden') {
     if (currentValue && currentValue.length > 0) {
       return schema.filter(

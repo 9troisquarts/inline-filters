@@ -9,7 +9,7 @@ import { FilterTogglerType, InlineFilterSchema } from "./types";
 import { isToggleable } from "./_utils";
 
 type FilterTogglerProps = {
-  schema: InlineFilterSchema<any>;
+  schema: InlineFilterSchema;
   value?: string[];
   onChange: (keys: string[], deletedKeys: string[]) => void;
 } & FilterTogglerType;

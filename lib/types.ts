@@ -134,7 +134,6 @@ export type FieldType = {
   defaultValue?: unknown;
 } & FieldItemType;
 
-// @ts-ignore
 export type FieldSchema =
   | ({
       name: string;
