@@ -78,8 +78,14 @@ export type BooleanInputProps = {
 };
 
 export type KeywordsLoadOptionsProps = {
-  keywords: string[]
-  matchType: string
+  include: {
+    keywords: string[];
+    matchType: string
+  },
+  exclude: {
+    keywords: string[];
+    matchType: string;
+  }
 };
 
 export type KeywordsInputProps = {
@@ -90,6 +96,8 @@ export type KeywordsInputProps = {
     showCancel?: boolean;
     defaultMatchType?: string;
     i18n?: {
+      includeText?: string;
+      excludeText?: string;
       matchText?: string;
       allText?: string;
       anyText?: string;
