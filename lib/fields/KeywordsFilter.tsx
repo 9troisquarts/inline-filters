@@ -219,7 +219,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
                   ...internalValue,
                   include: {
                     ...internalValue.include,
-                    keywords: internalValue.include.keywords?.filter((k, i) => i !== index)
+                    keywords: internalValue.include.keywords?.filter((_k, i) => i !== index)
                   }
                 })}
               />
@@ -264,7 +264,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
                     ...internalValue,
                     exclude: {
                       ...internalValue.exclude,
-                      keywords: internalValue.exclude.keywords?.filter((k, i) => i !== index)
+                      keywords: internalValue.exclude.keywords?.filter((_k, i) => i !== index)
                     }
                   })}
                 />
