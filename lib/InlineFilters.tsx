@@ -9,6 +9,10 @@ import fr_FR from 'antd/lib/locale/fr_FR';
 import en_GB from 'antd/lib/locale/en_GB';
 import es_ES from 'antd/lib/locale/es_ES';
 import { isEqual, pick } from "lodash";
+import dayjs from "./utils/dayjs";
+import 'dayjs/locale/fr';
+import 'dayjs/locale/en';
+import 'dayjs/locale/es';
 
 let config: Configuration = {
   locale: 'fr',
@@ -151,6 +155,8 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
     ...(props.config || {})
   }
 
+  dayjs.locale(configuration.locale);
+
   const ToggleComponent = toggle ? (
     <FilterToggler
       schema={schema}
@@ -159,7 +165,6 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
       {...(toggle || {})}
     />
   ) : undefined;
-
   return (
     <ConfigProvider locale={antdLocaleForLocale[config.locale]}>
       <Space style={{ width: "100%" }} wrap>

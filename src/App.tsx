@@ -12,7 +12,6 @@ import { InlineFilterSchema } from '../lib/types';
 const clientsOptions = faker.helpers.uniqueArray(faker.person.fullName, 30).map((name: string) => ({ value: name, label: name }));
 
 const onLoadKeywordsOptions = async ({ keywords, matchType }: { keywords: string[], matchType: string }) => {
-  console.log('Loading keywords options', keywords, matchType)
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
   return [
@@ -266,6 +265,7 @@ function App() {
             resetText="Réinitialiser les filtres"
             config={{
               okText: 'Filtrer',
+              locale: 'fr',
             }}
             schema={schema}
             {...props}

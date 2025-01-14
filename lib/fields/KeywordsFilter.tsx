@@ -3,7 +3,6 @@ import { FieldSchema, KeywordsInputProps } from '../types';
 import { AutoComplete, Button, Dropdown, MenuProps, Popover, Radio, Select, Space, Typography } from 'antd';
 import '../index.css';
 import { CloseCircleOutlined, DownOutlined } from '@ant-design/icons';
-import _ from 'lodash'
 import { useDebounce } from 'ahooks';
 import Badge from '../components/Badge';
 
@@ -207,7 +206,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
                   ...internalValue,
                   include: {
                     ...internalValue.include,
-                    keywords: internalValue.include.keywords?.filter((k, i) => i !== index)
+                    keywords: internalValue.include.keywords?.filter((_k, i) => i !== index)
                   }
                 })}
               />
@@ -252,7 +251,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
                     ...internalValue,
                     exclude: {
                       ...internalValue.exclude,
-                      keywords: internalValue.exclude.keywords?.filter((k, i) => i !== index)
+                      keywords: internalValue.exclude.keywords?.filter((_k, i) => i !== index)
                     }
                   })}
                 />

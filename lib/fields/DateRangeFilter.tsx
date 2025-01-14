@@ -27,6 +27,8 @@ const DateRangeFilter: React.FC<FilterProps> = props => {
     onChange,
   } = props;
 
+  dayjs.locale('fr');
+
   const {
     inputProps = {}
   } = (field.input || {}) as DateInputProps;
