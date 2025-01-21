@@ -60,7 +60,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
 
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
   const [internalValue, setInternalValue] = useState<ValueType>(value || defaultValue)
-  const totalKeywordsCount = internalValue.include.keywords.length + internalValue.exclude.keywords.length
+  const totalKeywordsCount = internalValue?.include?.keywords?.length + internalValue?.exclude?.keywords?.length
   const [searchType, setSearchType] = useState<SearchType>('include')  
   const [search, setSearch] = useState<string>('')
   const debouncedSearch = useDebounce(search, { wait: 200 })
@@ -80,17 +80,29 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
     if (debouncedSearch !== '' && debouncedSearch !== undefined) {
       if (typeof loadOptions === 'function') {
         loadOptions({
-          include: internalValue.include,
-          exclude: internalValue.exclude
+          include: {
+            keywords: searchType === 'include' ? [
+              ...internalValue?.include?.keywords || [],
+              debouncedSearch
+            ] : internalValue?.include?.keywords || [],
+            matchType: internalValue?.include?.matchType || 'all'
+          },
+          exclude: {
+            keywords: searchType === 'exclude' ? [
+              ...internalValue?.exclude?.keywords || [],
+              debouncedSearch
+            ] : internalValue?.exclude?.keywords || [],
+            matchType: internalValue?.exclude?.matchType || 'all'
+          }
         })
-          .then((results: string[]) => {
-            setSearchResults(results)
-          })
+        .then((results: string[]) => {
+          setSearchResults(results)
+        })
       }
     }
   }, [debouncedSearch])
 
-  const items = (searchType: 'include' | 'exclude'): MenuProps['items'] => [
+  const items = (searchType: SearchType): MenuProps['items'] => [
     {
       key: '0',
       label: i18n?.allText || 'all',
@@ -169,7 +181,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
       <Title level={5} className="wand__inline-filter__keywords__popover-title">
         { field?.label }
       </Title>
-      {internalValue.include.keywords.length > 0 && (
+      {internalValue?.include?.keywords?.length > 0 && (
       <>
       <div className="wand__inline-filter__match-type">
         <div>
@@ -215,7 +227,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
         </div>
         </>
       )}
-      {internalValue.exclude.keywords.length > 0 && (
+      {internalValue?.exclude?.keywords?.length > 0 && (
         <>
           <div className="wand__inline-filter__match-type">
             <div>
