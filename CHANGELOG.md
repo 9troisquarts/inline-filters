@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.5.2](https://github.com/9troisquarts/inline-filters/compare/v2.5.1...v2.5.2) (2025-01-21)
+
+
+### Bug Fixes
+
+* load options correct spreading of keywords object ([82512b4](https://github.com/9troisquarts/inline-filters/commit/82512b4221712813a36f51e8d06da2cb026f77f2))
+* typescript errors ([656f797](https://github.com/9troisquarts/inline-filters/commit/656f79723f6fb0f6dbcf0d4064121b115960356d))
+
 ### [2.5.1](https://github.com/9troisquarts/inline-filters/compare/v2.5.0...v2.5.1) (2025-01-21)
 
 ## [2.5.0](https://github.com/9troisquarts/inline-filters/compare/v2.4.1...v2.5.0) (2025-01-21)
