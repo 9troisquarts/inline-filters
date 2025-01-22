@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.1](https://github.com/9troisquarts/inline-filters/compare/v2.6.0...v2.6.1) (2025-01-22)
+
+
+### Bug Fixes
+
+* fix of maximum depth error ([a028424](https://github.com/9troisquarts/inline-filters/commit/a028424e35c50d26080d578ba4960d055319f08b))
+
 ## [2.6.0](https://github.com/9troisquarts/inline-filters/compare/v2.5.1...v2.6.0) (2025-01-22)
 
 
