@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.0](https://github.com/9troisquarts/inline-filters/compare/v2.5.1...v2.6.0) (2025-01-22)
+
+
+### Features
+
+* Finished async filter & type fixing ([36cce4f](https://github.com/9troisquarts/inline-filters/commit/36cce4f6c2b2d4ad88f106fb05ba063184fb54f8))
+
+
+### Bug Fixes
+
+* remove console log ([e412d00](https://github.com/9troisquarts/inline-filters/commit/e412d005b92b142a9a39997750ac7c8849da87ae))
+
 ### [2.5.1](https://github.com/9troisquarts/inline-filters/compare/v2.5.0...v2.5.1) (2025-01-21)
 
 ## [2.5.0](https://github.com/9troisquarts/inline-filters/compare/v2.4.1...v2.5.0) (2025-01-21)
