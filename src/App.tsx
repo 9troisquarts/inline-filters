@@ -24,6 +24,24 @@ const onLoadKeywordsOptions = async ({ keywords, matchType }: { keywords: string
   ]
 }
 
+const onLoadAsyncSelectOptions = async (search: string) => {
+  console.log('Loading async select options', search);
+
+  // Fetch data from the PokeAPI
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=200`);
+  const data = await response.json();
+
+  // Filter and format the results
+  const results = data.results
+    .filter((pokemon: { name: string }) => pokemon.name.toLowerCase().includes(search.toLowerCase()))
+    .map((pokemon: { name: string }) => ({
+      value: pokemon.name,
+      label: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)
+    }));
+
+  return results;
+};
+
 const marqueByInterest = [
   {
     label: 'Harry potter',
@@ -193,7 +211,19 @@ const schema: InlineFilterSchema = [
         }
       }
     }
-  }
+  },
+  {
+    name: 'async',
+    label: 'Async select',
+    input: {
+      type: 'asyncSelect',
+      inputProps: {
+        loadOptions: onLoadAsyncSelectOptions,
+        multiple: true,
+        searchPlaceholder: 'Rechercher...',
+      }
+    }
+  },
 ]
 
 // @ts-ignore

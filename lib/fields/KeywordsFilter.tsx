@@ -23,7 +23,7 @@ type ValueType = {
 type SearchType = 'include' | 'exclude'
 
 type FilterProps = {
-  field: FieldSchema<any> & { name: string };
+  field: FieldSchema & { name: string };
   value?: ValueType;
   onChange: (values: {
     [k: string]: ValueType | undefined

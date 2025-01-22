@@ -6,13 +6,14 @@ import SelectFilter from "./fields/SelectFilter";
 import StringFilter from "./fields/StringFilter";
 import KeywordsFilter from "./fields/KeywordsFilter";
 import { FieldSchema, InlineFilterSchema } from "./types";
+import AsyncSelectFilter from "./fields/AsyncSelectFilter";
 
 const renderDate = () => {
   return <Space>Render date</Space>;
 };
 
-export const isToggleable = (f: FieldSchema<any>) => f.name && (f.toggleable || f.toggleable === undefined)
-export const isUntoggleable = (field: FieldSchema<any>) => !isToggleable(field);
+export const isToggleable = (f: FieldSchema) => f.name && (f.toggleable || f.toggleable === undefined)
+export const isUntoggleable = (field: FieldSchema) => !isToggleable(field);
 export const objectIsPresent = (obj: any) => {
   return obj && typeof obj === "object" && Object.keys(obj).some((key) => !!obj[key]);
 }
@@ -26,7 +27,7 @@ export const renderValueForType = {
   date: renderDate,
 };
 
-export const extractToggledFields = (schema: InlineFilterSchema<any>, currentValue: string[], mode: 'default' | 'hidden' | 'visible') => {
+export const extractToggledFields = (schema: InlineFilterSchema, currentValue: string[], mode: 'default' | 'hidden' | 'visible') => {
   if( mode === 'default' || mode === 'hidden') {
     if (currentValue && currentValue.length > 0) {
       return schema.filter(
@@ -60,4 +61,5 @@ export const filterForType = {
   daterange: DateRangeFilter,
   select: SelectFilter,
   keywords: KeywordsFilter,
+  asyncSelect: AsyncSelectFilter
 };

@@ -4,7 +4,7 @@ import React, { cloneElement, useCallback, useEffect, useMemo, useState } from "
 import FilterToggler from "./FilterToggler";
 import { extractToggledFields, filterForType, isUntoggleable, objectIsPresent } from "./_utils";
 import SelectFilter from "./fields/SelectFilter";
-import { Configuration, FilterTogglerType, InlineFilterSchema } from "./types";
+import { Configuration, FieldSchema, FilterTogglerType, InlineFilterSchema } from "./types";
 import fr_FR from 'antd/lib/locale/fr_FR';
 import en_GB from 'antd/lib/locale/en_GB';
 import es_ES from 'antd/lib/locale/es_ES';
@@ -32,7 +32,7 @@ const antdLocaleForLocale = {
 };
 
 type BaseInlineFilters<T extends Record<string, any>> = {
-  schema: InlineFilterSchema<T>;
+  schema: InlineFilterSchema;
   delay?: number;
   resetText?: string;
   debug?: boolean;
@@ -171,7 +171,7 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
         {toggle && (toggle?.position === "before") && (
           ToggleComponent
         )}
-        {fields.map((field) => {
+        {fields.map((field: FieldSchema) => {
           const FilterComponent = filterForType[field.input.type] || SelectFilter;
           return (
             <FilterComponent
