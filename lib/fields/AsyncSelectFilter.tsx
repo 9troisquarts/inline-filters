@@ -108,11 +108,11 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
       } else {
         loadOptions('')
           .then((results: BaseOption[]) => {
-            setOptions(results.slice(0, defaultOptionsCount))
+            setOptions(results?.slice(0, defaultOptionsCount))
           });
       }
     }
-  }, [cachedOptions, debouncedSearch, defaultOptionsCount, loadOptions, popoverIsOpen])
+  }, [debouncedSearch])
 
   const popoverContent = (
     <>
