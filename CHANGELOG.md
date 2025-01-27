@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.2](https://github.com/9troisquarts/inline-filters/compare/v2.6.1...v2.6.2) (2025-01-27)
+
+
+### Bug Fixes
+
+* fix load options to get keywords ([6a6df45](https://github.com/9troisquarts/inline-filters/commit/6a6df45d09c27eb1c1ba4d890534334bf005e3dc))
+
 ### [2.6.1](https://github.com/9troisquarts/inline-filters/compare/v2.6.0...v2.6.1) (2025-01-22)
 
 
