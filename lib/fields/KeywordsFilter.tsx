@@ -76,17 +76,15 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
       setInternalValue(defaultValue)
     }
   }, [value])
-  console.log(internalValue)
+
   useEffect(() => {
     if (debouncedSearch) {
       if (typeof loadOptions === 'function') {
         loadOptions({
-          [searchType]: {
-            keywords: [
-              ...(internalValue?.[searchType].keywords || []),
-              debouncedSearch
+          keywords: [
+            ...(internalValue?.[searchType].keywords || []),
+            debouncedSearch
           ], matchType: internalValue[searchType].matchType
-          }
         }).then((results: string[]) => {
           setSearchResults(results)
         })
