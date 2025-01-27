@@ -78,11 +78,11 @@ export type BooleanInputProps = {
 };
 
 export type KeywordsLoadOptionsProps = {
-  include: {
+  include?: {
     keywords: string[];
     matchType: string
   },
-  exclude: {
+  exclude?: {
     keywords: string[];
     matchType: string;
   }

@@ -11,8 +11,8 @@ import { InlineFilterSchema } from '../lib/types';
 
 const clientsOptions = faker.helpers.uniqueArray(faker.person.fullName, 30).map((name: string) => ({ value: name, label: name }));
 
-const onLoadKeywordsOptions = async ({ keywords, matchType }: { keywords: string[], matchType: string }) => {
-  console.log('Loading keywords options', keywords, matchType)
+const onLoadKeywordsOptions = async (keywords: { keywords: string[], matchType: string }) => {
+  console.log('Loading keywords options', keywords)
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
   return [
