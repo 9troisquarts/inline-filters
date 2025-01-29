@@ -36,6 +36,7 @@ type BaseInlineFilters<T extends Record<string, any>> = {
   delay?: number;
   resetText?: string;
   debug?: boolean;
+  persistResetButton?: boolean;
   toggle?: FilterTogglerType;
   resetButton?: React.ReactNode;
   resetButtonProps?: ButtonProps;
@@ -63,6 +64,7 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
     delay = 200,
     resetText,
     toggle,
+    persistResetButton = false,
     resetButton,
     resetButtonProps = {},
     onReset,
@@ -194,7 +196,7 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
         {toggle && (toggle?.position !== "before") && (
           ToggleComponent
         )}
-        {onReset && (internalValue && objectIsPresent(internalValue)) && resetComponent}
+        {onReset && (persistResetButton || (internalValue && objectIsPresent(internalValue))) && resetComponent}
       </Space>
     </ConfigProvider>
   );
