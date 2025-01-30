@@ -36,10 +36,11 @@ type BaseInlineFilters<T extends Record<string, any>> = {
   delay?: number;
   resetText?: string;
   debug?: boolean;
-  persistResetButton?: boolean;
   toggle?: FilterTogglerType;
   resetButton?: React.ReactNode;
   resetButtonProps?: ButtonProps;
+  // Always show the reset button, never show it, or show it only when filters are set
+  resetButtonVisibility?: "always" | "never" | "dirty";
   onReset?: () => void;
   onChange: (object: T, value: T) => void;
 }
@@ -64,7 +65,7 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
     delay = 200,
     resetText,
     toggle,
-    persistResetButton = false,
+    resetButtonVisibility = 'dirty',
     resetButton,
     resetButtonProps = {},
     onReset,
@@ -167,6 +168,9 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
       {...(toggle || {})}
     />
   ) : undefined;
+
+  const showResetButton = onReset && (resetButtonVisibility === 'always' || (resetButtonVisibility == 'dirty' && internalValue && objectIsPresent(internalValue)));
+
   return (
     <ConfigProvider locale={antdLocaleForLocale[config.locale]}>
       <Space style={{ width: "100%" }} wrap>
@@ -196,7 +200,7 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
         {toggle && (toggle?.position !== "before") && (
           ToggleComponent
         )}
-        {onReset && (persistResetButton || (internalValue && objectIsPresent(internalValue))) && resetComponent}
+        {showResetButton && resetComponent}
       </Space>
     </ConfigProvider>
   );
