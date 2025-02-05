@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.4](https://github.com/9troisquarts/inline-filters/compare/v2.6.3...v2.6.4) (2025-02-05)
+
+
+### Bug Fixes
+
+* adds a prop to display the reset button even when no value is selected ([0d08723](https://github.com/9troisquarts/inline-filters/commit/0d08723b0db192d767c48ab96e1b788dfda4c905))
+* Ajout d'une props pour modifier le comportement de l'affichage du bouton reset ([486074d](https://github.com/9troisquarts/inline-filters/commit/486074d6918ed5782c40314587b7de83d2503b4e))
+
 ### [2.6.3](https://github.com/9troisquarts/inline-filters/compare/v2.6.2...v2.6.3) (2025-01-27)
 
 
