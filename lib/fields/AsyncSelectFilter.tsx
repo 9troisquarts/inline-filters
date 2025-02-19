@@ -1,4 +1,5 @@
-import { Input, Divider, Button, InputRef, Popover, Checkbox, Space, Tooltip, Badge } from "antd";
+import { Input, Divider, Button, InputRef, Popover, Checkbox, Space, Tooltip } from "antd";
+import Badge from '../components/Badge';
 import { FieldSchema, Configuration, BaseOption, AsyncSelectInputProps } from "../types";
 import { useEffect, useRef, useState } from "react";
 import scopeSvg from '../icons/scope.svg';
@@ -112,7 +113,7 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
           });
       }
     }
-  }, [debouncedSearch])
+  }, [debouncedSearch, popoverIsOpen])
 
   const popoverContent = (
     <>
@@ -137,7 +138,7 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
               <Option
                 key={`selected-${o.value}`}
                 option={o}
-                selectedValues={internalValue.map(o => o.value)}
+                selectedValues={value.map(o => o.value)}
                 onSelect={onSelect}
                 showCheck={!!multiple}
               />
