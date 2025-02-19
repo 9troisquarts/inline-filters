@@ -122,7 +122,6 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
         value={search}
         onChange={onSearchChange}
         onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
         placeholder={!isFocused ? searchPlaceholder : undefined}
         addonBefore={(
           <div className="wand__inline-filter__search-input__icon-wrapper">
@@ -186,7 +185,7 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
       trigger="click"
       overlayClassName={`wand__inline-filter__popover ${multiple ? 'wand__inline-filter__with_footer' : ''}`}
     >
-      <div className={`wand__inline-filter__filter ${value && value.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${internalValue.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
+      <div className={`wand__inline-filter__filter ${value && value.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${value && value.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
         <Space>
           <span className="wand__inline-filter__label">
             {field.label}
