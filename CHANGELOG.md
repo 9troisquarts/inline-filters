@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.5](https://github.com/9troisquarts/inline-filters/compare/v2.6.4...v2.6.5) (2025-02-19)
+
+
+### Bug Fixes
+
+* Fix des options par defaut non affichées et des valeurs selectionnées non cochées ([75b28d3](https://github.com/9troisquarts/inline-filters/commit/75b28d3790f842b9327b47db56cf847c9f3af5cf))
+
 ### [2.6.4](https://github.com/9troisquarts/inline-filters/compare/v2.6.3...v2.6.4) (2025-02-05)
 
 
