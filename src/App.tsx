@@ -242,7 +242,7 @@ function App() {
   const onReset = () => setSearch({ activeOn: '2023-11-12', clients: [] })
 
   const onChange = (values: any) => {
-    console.log('values: ', values)
+    console.log('WILL REFETCH')
     setSearch(values)
   }
 

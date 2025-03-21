@@ -7,7 +7,7 @@ import StringFilter from "./fields/StringFilter";
 import KeywordsFilter from "./fields/KeywordsFilter";
 import { FieldSchema, InlineFilterSchema } from "./types";
 import AsyncSelectFilter from "./fields/AsyncSelectFilter";
-
+import { isEqual } from "lodash";
 const renderDate = () => {
   return <Space>Render date</Space>;
 };
@@ -54,6 +54,17 @@ export const extractToggledFields = (schema: InlineFilterSchema, currentValue: s
   return schema;
 }
 
+export const isDirty = (value: any | any[], newValue: any | any[]) => {
+  if (Array.isArray(value) && Array.isArray(newValue)) return !isEqual(value, newValue);
+
+  if (Array.isArray(value) && !Array.isArray(newValue)) return true;
+
+  if (!Array.isArray(value) && Array.isArray(newValue)) return true;
+
+  return value !== newValue;
+}
+
+
 export const filterForType = {
   date: DateFilter,
   string: StringFilter,
@@ -63,3 +74,4 @@ export const filterForType = {
   keywords: KeywordsFilter,
   asyncSelect: AsyncSelectFilter
 };
+

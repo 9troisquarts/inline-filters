@@ -10,6 +10,7 @@ import circleXMark from '../icons/circle-xmark.svg';
 import '../index.css';
 import filterOption from '../utils/filterOption';
 import Badge from '../components/Badge';
+import { isDirty } from '../_utils';
 
 type ValueType = string | string[] | undefined;
 
@@ -71,7 +72,6 @@ const SelectFilter: React.FC<FilterProps> = props => {
     field,
     value,
     defaultConfig,
-    onChange,
   } = props;
 
   const {
@@ -89,7 +89,6 @@ const SelectFilter: React.FC<FilterProps> = props => {
 
   const countBadgeThreshold = (field?.input as SelectInputProps)?.inputProps?.countBadgeThreshold || defaultConfig.countBadgeThreshold || 0;
   const allowClear = (field?.input as SelectInputProps)?.inputProps?.allowClear || defaultConfig.allowClear || false;
-
   const {
     selected: internalValue,
     setSelected,
@@ -103,11 +102,11 @@ const SelectFilter: React.FC<FilterProps> = props => {
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const selectRef = useRef<InputRef>(null);
-
+  
   useEffect(() => {
     setSelected(castValue(value));
   }, [value, multiple]);
-
+  
   useEffect(() => {
     if(selectRef && selectRef.current)  {
       setTimeout(() => {
@@ -115,20 +114,25 @@ const SelectFilter: React.FC<FilterProps> = props => {
       }, 0)
     }
   }, [popoverIsOpen])
-
+  
+  const onChange = (values: ValueType[]) => {
+    if (isDirty(values, castValue(value))) {
+      props.onChange({ [field.name]: values })
+    }
+  }  
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target?.value);
   
   const onSelect = (key: ValueType) => {
     if (multiple) {
       if(internalValue.includes(key)) {
         const nextValues = [...internalValue];
-        nextValues.splice(nextValues.indexOf(key), 1)
+        nextValues.splice(nextValues.indexOf(key), 1);
         setSelected(nextValues);
       } else {
         setSelected([...internalValue, key]);
       }
     } else {
-      onChange({[field.name]: internalValue.includes(key) ? undefined : key})
+      onChange(internalValue.includes(key) ? undefined : key)
     }
   }
 
@@ -144,7 +148,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
   }
 
   const onOk = () => {
-    onChange({ [field.name]: internalValue });
+    onChange(internalValue);
     setPopoverIsOpen(false);
   }
 
@@ -155,7 +159,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
 
   const onReset = (e) => {
     e.stopPropagation();
-    onChange({ [field.name]: undefined });
+    onChange(undefined);
   }
 
   const {
