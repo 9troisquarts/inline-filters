@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.6](https://github.com/9troisquarts/inline-filters/compare/v2.6.5...v2.6.6) (2025-03-21)
+
+
+### Bug Fixes
+
+* Ajout d'un dirty sur les champs de type select ([3f1d2f5](https://github.com/9troisquarts/inline-filters/commit/3f1d2f540587227db1821270023b4cb39bb329e6))
+* Suppression du onBlur && fix de la className focused ([ccdd6e9](https://github.com/9troisquarts/inline-filters/commit/ccdd6e9172a12f8bc636d0dacf8aeb53e51ad883))
+
+### [2.5.2](https://github.com/9troisquarts/inline-filters/compare/v2.5.1...v2.5.2) (2025-01-21)
+
 ### [2.6.5](https://github.com/9troisquarts/inline-filters/compare/v2.6.4...v2.6.5) (2025-02-19)
 
 
