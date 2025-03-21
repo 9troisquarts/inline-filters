@@ -23,7 +23,7 @@ type ValueType = {
 type SearchType = 'include' | 'exclude'
 
 type FilterProps = {
-  field: FieldSchema<any> & { name: string };
+  field: FieldSchema & { name: string };
   value?: ValueType;
   onChange: (values: {
     [k: string]: ValueType | undefined
@@ -77,25 +77,14 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   }, [value])
 
   useEffect(() => {
-    if (debouncedSearch !== '' && debouncedSearch !== undefined) {
+    if (debouncedSearch) {
       if (typeof loadOptions === 'function') {
         loadOptions({
-          include: {
-            keywords: searchType === 'include' ? [
-              ...internalValue?.include?.keywords || [],
-              debouncedSearch
-            ] : internalValue?.include?.keywords || [],
-            matchType: internalValue?.include?.matchType || 'all'
-          },
-          exclude: {
-            keywords: searchType === 'exclude' ? [
-              ...internalValue?.exclude?.keywords || [],
-              debouncedSearch
-            ] : internalValue?.exclude?.keywords || [],
-            matchType: internalValue?.exclude?.matchType || 'all'
-          }
-        })
-        .then((results: string[]) => {
+          keywords: [
+            ...(internalValue?.[searchType].keywords || []),
+            debouncedSearch
+          ], matchType: internalValue[searchType].matchType
+        }).then((results: string[]) => {
           setSearchResults(results)
         })
       }

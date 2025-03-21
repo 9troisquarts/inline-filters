@@ -54,9 +54,18 @@ export type SelectInputProps = {
     searchPlaceholder?: string;
     noOptionsFound?: string;
     selectAllText?: string;
+    clearFilterText?: string;
     unselectAllText?: string;
     className?: string;
   };
+};
+
+export type AsyncSelectInputProps = {
+  type: 'asyncSelect';
+  inputProps: SelectInputProps['inputProps'] & {
+    loadOptions: (search: string) => Promise<BaseOption[]>;
+    defaultOptionsCount?: number;
+  }
 };
 
 export type StringInputProps = {
@@ -78,14 +87,8 @@ export type BooleanInputProps = {
 };
 
 export type KeywordsLoadOptionsProps = {
-  include: {
-    keywords: string[];
-    matchType: string
-  },
-  exclude: {
-    keywords: string[];
-    matchType: string;
-  }
+  keywords: string[];
+  matchType: string
 };
 
 export type KeywordsInputProps = {
@@ -115,6 +118,7 @@ export type InputType =
   | DateInputProps
   | StringInputProps
   | BooleanInputProps
+  | AsyncSelectInputProps
   | KeywordsInputProps;
 
 export type FieldItemType = {
@@ -132,8 +136,7 @@ export type FieldType = {
   defaultValue?: unknown;
 } & FieldItemType;
 
-// @ts-ignore
-export type FieldSchema<T extends Record<string, any>> =
+export type FieldSchema =
   | ({
       name: string;
     } & FieldType)
@@ -143,7 +146,7 @@ export type FieldSchema<T extends Record<string, any>> =
         input: DatePickerInputProps;
       });
 
-export type InlineFilterSchema<T extends Record<string, any>> = Array<FieldSchema<T>>;
+export type InlineFilterSchema = Array<FieldSchema>;
 
 export type FilterTogglerType = {
   key: string;
