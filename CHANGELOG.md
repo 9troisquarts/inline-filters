@@ -14,48 +14,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* Fix des options par defaut non affichées et des valeurs selectionnées non cochées ([75b28d3](https://github.com/9troisquarts/inline-filters/commit/75b28d3790f842b9327b47db56cf847c9f3af5cf))
-
-### [2.6.4](https://github.com/9troisquarts/inline-filters/compare/v2.6.3...v2.6.4) (2025-02-05)
-
-
-### Bug Fixes
-
-* adds a prop to display the reset button even when no value is selected ([0d08723](https://github.com/9troisquarts/inline-filters/commit/0d08723b0db192d767c48ab96e1b788dfda4c905))
-* Ajout d'une props pour modifier le comportement de l'affichage du bouton reset ([486074d](https://github.com/9troisquarts/inline-filters/commit/486074d6918ed5782c40314587b7de83d2503b4e))
-
-### [2.6.3](https://github.com/9troisquarts/inline-filters/compare/v2.6.2...v2.6.3) (2025-01-27)
-
-
-### Bug Fixes
-
-* change load options keywords structure ([0e4526d](https://github.com/9troisquarts/inline-filters/commit/0e4526dbee10ee0d3865a48d91ac75ef379571ea))
-
-### [2.6.2](https://github.com/9troisquarts/inline-filters/compare/v2.6.1...v2.6.2) (2025-01-27)
-
-
-### Bug Fixes
-
-* fix load options to get keywords ([6a6df45](https://github.com/9troisquarts/inline-filters/commit/6a6df45d09c27eb1c1ba4d890534334bf005e3dc))
-
-### [2.6.1](https://github.com/9troisquarts/inline-filters/compare/v2.6.0...v2.6.1) (2025-01-22)
-
-
-### Bug Fixes
-
-* fix of maximum depth error ([a028424](https://github.com/9troisquarts/inline-filters/commit/a028424e35c50d26080d578ba4960d055319f08b))
-
-## [2.6.0](https://github.com/9troisquarts/inline-filters/compare/v2.5.1...v2.6.0) (2025-01-22)
-
-
-### Features
-
-* Finished async filter & type fixing ([36cce4f](https://github.com/9troisquarts/inline-filters/commit/36cce4f6c2b2d4ad88f106fb05ba063184fb54f8))
-
-
-### Bug Fixes
-
-* remove console log ([e412d00](https://github.com/9troisquarts/inline-filters/commit/e412d005b92b142a9a39997750ac7c8849da87ae))
+* load options correct spreading of keywords object ([82512b4](https://github.com/9troisquarts/inline-filters/commit/82512b4221712813a36f51e8d06da2cb026f77f2))
+* typescript errors ([656f797](https://github.com/9troisquarts/inline-filters/commit/656f79723f6fb0f6dbcf0d4064121b115960356d))
 
 ### [2.5.1](https://github.com/9troisquarts/inline-filters/compare/v2.5.0...v2.5.1) (2025-01-21)
 
