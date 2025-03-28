@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.7](https://github.com/9troisquarts/inline-filters/compare/v2.6.6...v2.6.7) (2025-03-28)
+
+
+### Bug Fixes
+
+* Ajout d'un dirty sur les champs de type select ([3f1d2f5](https://github.com/9troisquarts/inline-filters/commit/3f1d2f540587227db1821270023b4cb39bb329e6))
+
 ### [2.6.6](https://github.com/9troisquarts/inline-filters/compare/v2.6.5...v2.6.6) (2025-02-19)
 
 
