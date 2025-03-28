@@ -5,6 +5,8 @@ import '../index.css';
 import { CloseCircleOutlined, DownOutlined } from '@ant-design/icons';
 import { useDebounce } from 'ahooks';
 import Badge from '../components/Badge';
+import { isDirty } from '../_utils';
+import { isEqual } from 'lodash';
 
 const { Title } = Typography;
 const { Option } = Select
@@ -91,6 +93,22 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
     }
   }, [debouncedSearch])
 
+  const handlePopoverOpenChange = (open: boolean) => {
+    if (!open) {
+      // Check if the internalValue is different from the value prop and not equal to the defaultValue
+      if (isDirty(internalValue, value) && !isEqual(internalValue, defaultValue)) {
+        // Submit the values if they are different and not equal to the defaultValue
+        onChange({ [field.name]: internalValue });
+      }
+    }
+    setPopoverIsOpen(open);
+  };
+
+  const handleSearchClick = () => {
+    onChange({ [field.name]: internalValue })
+    setPopoverIsOpen(false);
+  };
+
   const items = (searchType: SearchType): MenuProps['items'] => [
     {
       key: '0',
@@ -142,6 +160,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
     setSearchResults([])
     onChange({ [field.name]: undefined })
   }
+
   const onRestoreFilter = () => {
     setInternalValue(value || defaultValue)
     setSearch('')
@@ -327,10 +346,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
           <Button
             type="primary"
             disabled={internalValue[searchType].keywords?.length === 0}
-            onClick={() => {
-              onChange({ [field.name]: internalValue })
-              setPopoverIsOpen(false)
-            }}
+            onClick={handleSearchClick}
           >
             { i18n?.searchText || 'Search' }
           </Button>
@@ -346,7 +362,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
         open={popoverIsOpen}
         content={popoverContent}
         placement="bottom"
-        onOpenChange={setPopoverIsOpen}
+        onOpenChange={handlePopoverOpenChange}
         trigger="click"
         overlayClassName="wand__inline-filter__popover"
         overlayStyle={{ width: '500px' }}
