@@ -1,13 +1,13 @@
 import { Input, Divider, Button, InputRef, Popover, Checkbox, Space, Tooltip } from "antd";
 import Badge from '../components/Badge';
 import { FieldSchema, Configuration, BaseOption, AsyncSelectInputProps } from "../types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import scopeSvg from '../icons/scope.svg';
 import SVG from 'react-inlinesvg';
 import { useDebounce, useSelections } from "ahooks";
 import circleXMark from '../icons/circle-xmark.svg';
 import '../index.css';
-import { isEqual, set } from "lodash";
+import { isEqual, isNil, set } from "lodash";
 
 type ValueType = string | number;
 
@@ -41,7 +41,18 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
     } = {} as AsyncSelectInputProps['inputProps'],
   } = inputConfig;
 
-  const countBadgeThreshold = inputConfig?.inputProps?.countBadgeThreshold || defaultConfig.countBadgeThreshold || 0;
+  const countBadgeThreshold = useMemo(() => {
+    if (!isNil(inputConfig?.inputProps?.countBadgeThreshold)) {
+      return inputConfig?.inputProps?.countBadgeThreshold;
+    }
+
+    if (!isNil(defaultConfig.countBadgeThreshold)) {
+      return defaultConfig.countBadgeThreshold;
+    }
+
+    return 0;
+  }, [inputConfig?.inputProps?.countBadgeThreshold, defaultConfig.countBadgeThreshold])
+
   const allowClear = inputConfig?.inputProps?.allowClear || defaultConfig.allowClear || false;
   const [search, setSearch] = useState<string | undefined>(undefined);
   const debouncedSearch = useDebounce(search, { wait: 200 })
