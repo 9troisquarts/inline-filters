@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.3](https://github.com/9troisquarts/inline-filters/compare/v2.7.2...v2.7.3) (2025-05-21)
+
+
+### Bug Fixes
+
+* Typo ([bd1901b](https://github.com/9troisquarts/inline-filters/commit/bd1901bbab25610e6816207fe60e1c7fc0892a41))
+
 ### [2.7.2](https://github.com/9troisquarts/inline-filters/compare/v2.6.7...v2.7.2) (2025-04-11)
 
 
