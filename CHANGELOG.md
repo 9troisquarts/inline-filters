@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.3](https://github.com/9troisquarts/inline-filters/compare/v2.6.7...v2.7.3) (2025-05-26)
+
+
+### Bug Fixes
+
+* Ajoute une icône dans le filtre Boolean ([57c326b](https://github.com/9troisquarts/inline-filters/commit/57c326b30acdcb392b010b7b7bbb1fe7c07b60fc))
+* Allow badge to be set at 0 ([5b3c7f0](https://github.com/9troisquarts/inline-filters/commit/5b3c7f0fc8b738f4f0d1b78cad0ef2897962a5ab))
+* Typo ([bd1901b](https://github.com/9troisquarts/inline-filters/commit/bd1901bbab25610e6816207fe60e1c7fc0892a41))
+
 ### [2.7.2](https://github.com/9troisquarts/inline-filters/compare/v2.6.7...v2.7.2) (2025-04-11)
 
 
