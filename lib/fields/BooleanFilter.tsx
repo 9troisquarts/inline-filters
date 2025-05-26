@@ -34,6 +34,11 @@ const BooleanFilter: React.FC<FilterProps> = props => {
       <Space>
         <Checkbox checked={internalValue} />
         {field.label}
+        {field.icon && (
+          <span>
+            {field.icon}
+          </span>
+        )}
       </Space>
     </div>
   )
