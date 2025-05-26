@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.5](https://github.com/9troisquarts/inline-filters/compare/v2.7.4...v2.7.5) (2025-05-26)
+
+
+### Bug Fixes
+
+* On met plutôt l'icone a gauche.. ([71e76f9](https://github.com/9troisquarts/inline-filters/commit/71e76f90860f98a0f53131ecb86da506b848719d))
+
 ### [2.7.4](https://github.com/9troisquarts/inline-filters/compare/v2.7.3...v2.7.4) (2025-05-26)
 
 ### [2.7.3](https://github.com/9troisquarts/inline-filters/compare/v2.6.7...v2.7.3) (2025-05-26)
