@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.7](https://github.com/9troisquarts/inline-filters/compare/v2.7.4...v2.7.7) (2025-07-31)
+
+
+### Bug Fixes
+
+* Corrige le filtre keywords qui ne s'affichait pas comme "actif" ([54be4ab](https://github.com/9troisquarts/inline-filters/commit/54be4ab5ec40b698e48183506b0d7bea03f868f5))
+* On met plutôt l'icone a gauche.. ([71e76f9](https://github.com/9troisquarts/inline-filters/commit/71e76f90860f98a0f53131ecb86da506b848719d))
+
 ### [2.7.3](https://github.com/9troisquarts/inline-filters/compare/v2.7.2...v2.7.3) (2025-05-21)
 
 
