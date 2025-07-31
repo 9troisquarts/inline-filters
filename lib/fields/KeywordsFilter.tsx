@@ -73,9 +73,7 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
   }, [popoverIsOpen])
 
   useEffect(() => {
-    if (!value) {
-      setInternalValue(defaultValue)
-    }
+    setInternalValue(value || defaultValue)
   }, [value])
 
   useEffect(() => {
