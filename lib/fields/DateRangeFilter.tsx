@@ -67,7 +67,7 @@ const DateRangeFilter: React.FC<FilterProps> = props => {
   return (
     <RangePicker
       {...(inputProps || {})}
-      className={`wand__inline-filter__datepicker ${filled ? 'wand__inline-filter__datepicker--filled' : ''}`}
+      className={`wand__inline-filter__datepicker ${filled ? 'wand__inline-filter__datepicker--filled' : ''} ${inputProps?.className}`}
       value={v}
       onChange={handleChange}
     />
