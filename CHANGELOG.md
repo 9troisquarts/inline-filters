@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.8](https://github.com/9troisquarts/inline-filters/compare/v2.7.7...v2.7.8) (2025-08-05)
+
+
+### Bug Fixes
+
+* Fix async select filter & add range filter ([f4b8be8](https://github.com/9troisquarts/inline-filters/commit/f4b8be89a36f4fbd3aa1ce0bd72c2d3b86648453))
+
 ### [2.7.7](https://github.com/9troisquarts/inline-filters/compare/v2.7.4...v2.7.7) (2025-07-31)
 
 
