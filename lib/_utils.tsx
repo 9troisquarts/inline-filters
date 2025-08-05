@@ -5,6 +5,7 @@ import DateRangeFilter from "./fields/DateRangeFilter";
 import SelectFilter from "./fields/SelectFilter";
 import StringFilter from "./fields/StringFilter";
 import KeywordsFilter from "./fields/KeywordsFilter";
+import RangeFilter from "./fields/RangeFilter";
 import { FieldSchema, InlineFilterSchema } from "./types";
 import AsyncSelectFilter from "./fields/AsyncSelectFilter";
 import { isEqual } from "lodash";
@@ -72,6 +73,7 @@ export const filterForType = {
   daterange: DateRangeFilter,
   select: SelectFilter,
   keywords: KeywordsFilter,
-  asyncSelect: AsyncSelectFilter
+  asyncSelect: AsyncSelectFilter,
+  range: RangeFilter
 };
 

@@ -368,3 +368,9 @@
   padding-left: 32px;
   padding-right: 32px;
 }
+
+.wand__inline-filter__range-popover .ant-popover-content {
+  min-width: 300px;
+  width: 100%;
+  overflow: hidden;
+}

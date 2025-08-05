@@ -159,6 +159,28 @@ const schema: InlineFilterSchema = [
     }
   },
   {
+    name: 'priceRange',
+    label: 'Fourchette de prix',
+    title: 'Sélectionner une fourchette de prix',
+    input: {
+      type: 'range',
+      inputProps: {
+        min: 0,
+        max: 1000,
+        step: 10,
+        marks: {
+          0: '0€',
+          250: '250€',
+          500: '500€',
+          750: '750€',
+          1000: '1000€'
+        },
+        tipFormatter: (value: number | undefined) => value ? `${value}€` : '',
+        allowClear: true
+      }
+    }
+  },
+  {
     name: ['startingOn', 'endingOn'],
     title: 'Activité (range)',
     label: 'Actif entre le',

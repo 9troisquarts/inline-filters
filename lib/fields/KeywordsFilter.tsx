@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { FieldSchema, KeywordsInputProps } from '../types';
 import { AutoComplete, Button, Dropdown, MenuProps, Popover, Radio, Select, Space, Typography } from 'antd';
 import '../index.css';
@@ -62,7 +62,11 @@ const KeywordsFilter: React.FC<FilterProps> = props => {
 
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
   const [internalValue, setInternalValue] = useState<ValueType>(value || defaultValue)
-  const totalKeywordsCount = internalValue?.include?.keywords?.length + internalValue?.exclude?.keywords?.length
+  const totalKeywordsCount = useMemo(() => {
+    const includeCount = internalValue?.include?.keywords?.length || 0;
+    const excludeCount = internalValue?.exclude?.keywords?.length || 0;
+    return includeCount + excludeCount;
+  }, [internalValue?.include?.keywords, internalValue?.exclude?.keywords]);
   const [searchType, setSearchType] = useState<SearchType>('include')  
   const [search, setSearch] = useState<string>('')
   const debouncedSearch = useDebounce(search, { wait: 200 })

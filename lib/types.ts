@@ -112,6 +112,19 @@ export type KeywordsInputProps = {
   };
 };
 
+export type RangeInputProps = {
+  type: "range";
+  inputProps?: {
+    min?: number;
+    max?: number;
+    step?: number;
+    marks?: Record<number, string | { style?: React.CSSProperties; label?: string }>;
+    allowClear?: boolean;
+    tipFormatter?: (value: number | undefined) => React.ReactNode;
+    included?: boolean;
+  };
+};
+
 export type InputType =
   | DatePickerInputProps
   | SelectInputProps
@@ -119,7 +132,8 @@ export type InputType =
   | StringInputProps
   | BooleanInputProps
   | AsyncSelectInputProps
-  | KeywordsInputProps;
+  | KeywordsInputProps
+  | RangeInputProps;
 
 export type FieldItemType = {
   label?: string;
