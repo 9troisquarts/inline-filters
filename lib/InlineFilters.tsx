@@ -33,7 +33,6 @@ const antdLocaleForLocale = {
 
 type BaseInlineFilters<T extends Record<string, any>> = {
   schema: InlineFilterSchema;
-  className?: string;
   delay?: number;
   resetText?: string;
   debug?: boolean;
@@ -66,7 +65,6 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
     delay = 200,
     resetText,
     toggle,
-    className,
     resetButtonVisibility = 'dirty',
     resetButton,
     resetButtonProps = {},
