@@ -374,3 +374,10 @@
   width: 100%;
   overflow: hidden;
 }
+
+.wand__inline-filter__wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}

@@ -33,6 +33,7 @@ const antdLocaleForLocale = {
 
 type BaseInlineFilters<T extends Record<string, any>> = {
   schema: InlineFilterSchema;
+  className?: string;
   delay?: number;
   resetText?: string;
   debug?: boolean;
@@ -65,6 +66,7 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
     delay = 200,
     resetText,
     toggle,
+    className,
     resetButtonVisibility = 'dirty',
     resetButton,
     resetButtonProps = {},
@@ -173,7 +175,7 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
 
   return (
     <ConfigProvider locale={antdLocaleForLocale[config.locale]}>
-      <Space style={{ width: "100%" }} wrap>
+      <div className={`wand__inline-filter__wrapper ${className || ''}`}>
         {toggle && (toggle?.position === "before") && (
           ToggleComponent
         )}
@@ -201,7 +203,7 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
           ToggleComponent
         )}
         {showResetButton && resetComponent}
-      </Space>
+      </div>
     </ConfigProvider>
   );
 };
