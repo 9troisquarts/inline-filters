@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.9](https://github.com/9troisquarts/inline-filters/compare/v2.7.8...v2.7.9) (2025-10-06)
+
+
+### Bug Fixes
+
+* Permet d'ajouter une className au daterange filter ([a4d91fb](https://github.com/9troisquarts/inline-filters/commit/a4d91fb78f9f5ee16346bd5e29f8e21b9f8b0da3))
+
 ### [2.7.8](https://github.com/9troisquarts/inline-filters/compare/v2.7.7...v2.7.8) (2025-08-05)
 
 
