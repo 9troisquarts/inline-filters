@@ -1,5 +1,5 @@
 import { useDebounceFn, useLocalStorageState } from "ahooks";
-import { Button, ButtonProps, ConfigProvider, Space } from "antd";
+import { Button, ButtonProps, ConfigProvider } from "antd";
 import React, { cloneElement, useCallback, useEffect, useMemo, useState } from "react";
 import FilterToggler from "./FilterToggler";
 import { extractToggledFields, filterForType, isUntoggleable, objectIsPresent } from "./_utils";
