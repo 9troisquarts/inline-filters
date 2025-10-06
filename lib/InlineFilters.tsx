@@ -175,7 +175,7 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
 
   return (
     <ConfigProvider locale={antdLocaleForLocale[config.locale]}>
-      <div className={`wand__inline-filter__wrapper ${className || ''}`}>
+      <>
         {toggle && (toggle?.position === "before") && (
           ToggleComponent
         )}
@@ -202,8 +202,8 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
         {toggle && (toggle?.position !== "before") && (
           ToggleComponent
         )}
-        {showResetButton && resetComponent}
-      </div>
+      </>
+      {showResetButton && resetComponent}
     </ConfigProvider>
   );
 };
