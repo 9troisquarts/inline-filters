@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.12](https://github.com/9troisquarts/inline-filters/compare/v2.7.10...v2.7.12) (2025-11-12)
+
+
+### Bug Fixes
+
+* Adds "unselect all" to async select filter ([52bddf4](https://github.com/9troisquarts/inline-filters/commit/52bddf43b53fdd620a8e604240d7bf6b69c4efb3))
+* inline filters ([de75d48](https://github.com/9troisquarts/inline-filters/commit/de75d48fba111e0aaf29d190c49e6533e5c4f278))
+
 ### [2.7.11](https://github.com/9troisquarts/inline-filters/compare/v2.7.10...v2.7.11) (2025-10-06)
 
 
