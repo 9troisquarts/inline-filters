@@ -245,11 +245,18 @@ const AsyncSelectFilter: React.FC<FilterProps> = props => {
             <Divider className="wand__inline-filter__popover-divider" />
           </div>
           <div className="wand__inline-filter__popover-footer">
+            {internalValue.length > 0 && (
+              <div>
+                <a onClick={() => setSelected([])}>
+                  {clearFilterText || defaultConfig.clearFilterText || 'Clear'}
+                </a>
+              </div>
+            )}
             <div style={{ marginLeft: 'auto' }}>
               <Button
                 type="primary"
                 onClick={onOk}
-              >
+                >
                 {okText || defaultConfig.okText || 'Rechercher'}
               </Button>
             </div>

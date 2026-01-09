@@ -72,7 +72,7 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
   } = props;
 
   const [filtersToggled, setFiltersToggled] = useLocalStorageState<string[]>(
-    toggle?.key ? `${toggle?.key}-${toggle?.mode}-filters` : `filter-${toggle?.mode}-toggle`,
+    toggle?.key ? `${toggle?.key}-${toggle?.mode || 'default'}-filters` : `filter-${toggle?.mode || 'default'}-toggle`,
     {
       defaultValue: toggle?.defaultValue || [],
     }
