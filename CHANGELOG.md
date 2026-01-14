@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.14](https://github.com/9troisquarts/inline-filters/compare/v2.7.13...v2.7.14) (2026-01-14)
+
+
+### Bug Fixes
+
+* lowerCase in filter option ([27c96ef](https://github.com/9troisquarts/inline-filters/commit/27c96efbc24a614ed7cf30b3ce3dd3a4f6206f1c))
+* undefined key for filters storage ([0cc5e04](https://github.com/9troisquarts/inline-filters/commit/0cc5e04790ab3afeea639bd9cdc49998d0b02d32))
+
 ### [2.7.13](https://github.com/9troisquarts/inline-filters/compare/v2.7.12...v2.7.13) (2025-11-12)
 
 ### [2.7.12](https://github.com/9troisquarts/inline-filters/compare/v2.7.10...v2.7.12) (2025-11-12)
