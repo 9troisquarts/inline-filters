@@ -86,7 +86,7 @@ const FilterToggler: React.FC<FilterTogglerProps> = (props) => {
   let options = toggleableFilters;
   if (search && search.length > 0) {
     options = toggleableFilters.filter((f) => {
-      return f.label?.toLowerCase()?.includes(search.toLowerCase()) || f.title?.toLowerCase()?.includes(search.toLowerCase());
+      return f.label?.toLowerCase()?.includes(search?.toLowerCase()) || f.title?.toLowerCase()?.includes(search?.toLowerCase());
     });
   }
   const popoverContent = (
