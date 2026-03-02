@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BaseOption, Configuration, FieldSchema, OptionType, OptionWithChildren, SelectInputProps } from '../types';
 import SVG from 'react-inlinesvg';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { Button, Checkbox, Divider, Input, InputRef, Popover, Space, Tooltip } from 'antd';
 import { useSelections } from 'ahooks';
 import scopeSvg from '../icons/scope.svg';
@@ -10,6 +10,7 @@ import circleXMark from '../icons/circle-xmark.svg';
 import '../index.css';
 import filterOption from '../utils/filterOption';
 import Badge from '../components/Badge';
+import { isDirty } from '../_utils';
 
 type ValueType = string | string[] | undefined;
 
@@ -71,7 +72,6 @@ const SelectFilter: React.FC<FilterProps> = props => {
     field,
     value,
     defaultConfig,
-    onChange,
   } = props;
 
   const {
@@ -89,7 +89,6 @@ const SelectFilter: React.FC<FilterProps> = props => {
 
   const countBadgeThreshold = (field?.input as SelectInputProps)?.inputProps?.countBadgeThreshold || defaultConfig.countBadgeThreshold || 0;
   const allowClear = (field?.input as SelectInputProps)?.inputProps?.allowClear || defaultConfig.allowClear || false;
-
   const {
     selected: internalValue,
     setSelected,
@@ -103,11 +102,11 @@ const SelectFilter: React.FC<FilterProps> = props => {
   const [popoverIsOpen, setPopoverIsOpen] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const selectRef = useRef<InputRef>(null);
-
+  
   useEffect(() => {
     setSelected(castValue(value));
   }, [value, multiple]);
-
+  
   useEffect(() => {
     if(selectRef && selectRef.current)  {
       setTimeout(() => {
@@ -115,20 +114,25 @@ const SelectFilter: React.FC<FilterProps> = props => {
       }, 0)
     }
   }, [popoverIsOpen])
-
+  
+  const onChange = (values: ValueType[]) => {
+    if (isDirty(values, castValue(value))) {
+      props.onChange({ [field.name]: values })
+    }
+  }  
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target?.value);
   
   const onSelect = (key: ValueType) => {
     if (multiple) {
       if(internalValue.includes(key)) {
         const nextValues = [...internalValue];
-        nextValues.splice(nextValues.indexOf(key), 1)
+        nextValues.splice(nextValues.indexOf(key), 1);
         setSelected(nextValues);
       } else {
         setSelected([...internalValue, key]);
       }
     } else {
-      onChange({[field.name]: internalValue.includes(key) ? undefined : key})
+      onChange(internalValue.includes(key) ? undefined : key)
     }
   }
 
@@ -144,23 +148,35 @@ const SelectFilter: React.FC<FilterProps> = props => {
   }
 
   const onOk = () => {
-    onChange({ [field.name]: internalValue });
+    onChange(internalValue);
     setPopoverIsOpen(false);
+  }
+
+  const handleOpenChange = (visible: boolean) => {
+    setPopoverIsOpen(visible);
+    if(!visible && !isEqual(props?.value, internalValue)) onOk();
+  }
+
+  const onReset = (e) => {
+    e.stopPropagation();
+    onChange(undefined);
   }
 
   const {
     selectedOptions,
-    filteredOptions
+    filteredOptions,
+    currentOptions
   } = useMemo(() => {
     const alreadySelected = Array.isArray(value) ? value : [value];
     
     return {
       filteredOptions: filterOptionsBySearch(options, search, defaultConfig.pullSelectedToTop ? alreadySelected : [], search && search.length > 0 ? 'all' : 'except'),
-      selectedOptions: flattenOptions(filterOptionsBySearch(options, search, alreadySelected, 'only'))
+      selectedOptions: flattenOptions(filterOptionsBySearch(options, search, alreadySelected, 'only')),
+      currentOptions: flattenOptions(filterOptionsBySearch(options, undefined, alreadySelected, 'only')),
     };
   }, [options, search, Array.isArray(value) ? value.join(',') : value]);
 
-  const selectedCount = (selectedOptions || []).reduce((acc, o) => {
+  const selectedCount = (currentOptions || []).reduce((acc, o) => {
     if (isBaseOption(o)) return acc + 1;
     if (isOptionWithChildren(o)) return acc + o.options.length;
     return acc;
@@ -255,43 +271,43 @@ const SelectFilter: React.FC<FilterProps> = props => {
       open={popoverIsOpen}
       content={popoverContent}
       placement="bottom"
-      onOpenChange={setPopoverIsOpen}
+      onOpenChange={handleOpenChange}
       trigger="click"
       overlayClassName={`wand__inline-filter__popover ${multiple ? 'wand__inline-filter__with_footer' : ''}`}
     >
-      <div className={`wand__inline-filter__filter ${selectedOptions.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${selectedOptions.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
+      <div className={`wand__inline-filter__filter ${currentOptions.length > 0 ? 'wand__inline-filter__filter--filled' : ''} ${currentOptions.length > 0 || popoverIsOpen ? 'wand__inline-filter__filter--focused' : ''}`}>
         <Space>
           <span className="wand__inline-filter__label">
             {field.label}
-            {selectedOptions.length > 0 && !multiple && (
+            {currentOptions.length > 0 && !multiple && (
               <span>
                 &nbsp;:&nbsp;
-                {isBaseOption(selectedOptions[0]) ? selectedOptions[0].label : selectedOptions[0].options.map(o => o.label)[0]}
+                {isBaseOption(currentOptions[0]) ? currentOptions[0].label : currentOptions[0].options.map(o => o.label)[0]}
               </span>
             )}
-            {selectedOptions.length > 0 && multiple && (
+            {selectedCount > 0 && multiple && (
               <>
-                {selectedOptions.length > countBadgeThreshold ? (
+                {currentOptions.length > countBadgeThreshold ? (
                   <Badge className="wand__inline-filter__badge" count={selectedCount} />
                 ) : (
                   <span>
-                    &nbsp;:&nbsp;{selectedOptions.map(o => o.label).join("; ")}
+                    &nbsp;:&nbsp;{currentOptions.map(o => o.label).join("; ")}
                   </span>
                 )}
               </>
             )}
-            {field.icon && (!selectedOptions || selectedCount === 0) && (
+            {field.icon && (!currentOptions || selectedCount === 0) && (
               <span style={{ marginLeft: 8 }}>
                 {field.icon}
               </span>
             )}
-            {allowClear && selectedOptions.length > 0 && (
+            {allowClear && currentOptions.length > 0 && (
               <>
                 &nbsp;
                 <Tooltip
                   title={clearFilterText || defaultConfig.clearFilterText || 'Clear'}
                 >
-                  <a className="wand__inline-filter-close-mark" onClick={() => onChange({ [field.name]: undefined })}>
+                  <a className="wand__inline-filter-close-mark" onClick={onReset}>
                     <SVG src={circleXMark} height={14} />
                   </a>
                 </Tooltip>
@@ -307,7 +323,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
 const Option = ({ option, selectedValues, showCheck = false, onSelect }: { option: OptionType; selectedValues?: ValueType[]; showCheck: boolean; onSelect: (value: ValueType) => void;}) => {
   
   const handleSelect = (opt: OptionType) => {
-    if(isBaseOption(opt)) onSelect(opt.value);
+    if(isBaseOption(opt)) onSelect(opt.value, opt);
   }
 
   if (isOptionWithChildren(option))

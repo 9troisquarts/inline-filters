@@ -2,6 +2,161 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.17](https://github.com/9troisquarts/inline-filters/compare/v2.7.15...v2.7.17) (2026-01-14)
+
+### [2.7.15](https://github.com/9troisquarts/inline-filters/compare/v2.7.14...v2.7.15) (2026-01-14)
+
+### [2.7.14](https://github.com/9troisquarts/inline-filters/compare/v2.7.13...v2.7.14) (2026-01-14)
+
+
+### Bug Fixes
+
+* lowerCase in filter option ([27c96ef](https://github.com/9troisquarts/inline-filters/commit/27c96efbc24a614ed7cf30b3ce3dd3a4f6206f1c))
+* undefined key for filters storage ([0cc5e04](https://github.com/9troisquarts/inline-filters/commit/0cc5e04790ab3afeea639bd9cdc49998d0b02d32))
+
+### [2.7.13](https://github.com/9troisquarts/inline-filters/compare/v2.7.12...v2.7.13) (2025-11-12)
+
+### [2.7.12](https://github.com/9troisquarts/inline-filters/compare/v2.7.10...v2.7.12) (2025-11-12)
+
+
+### Bug Fixes
+
+* Adds "unselect all" to async select filter ([52bddf4](https://github.com/9troisquarts/inline-filters/commit/52bddf43b53fdd620a8e604240d7bf6b69c4efb3))
+* inline filters ([de75d48](https://github.com/9troisquarts/inline-filters/commit/de75d48fba111e0aaf29d190c49e6533e5c4f278))
+
+### [2.7.11](https://github.com/9troisquarts/inline-filters/compare/v2.7.10...v2.7.11) (2025-10-06)
+
+
+### Bug Fixes
+
+* inline filters ([de75d48](https://github.com/9troisquarts/inline-filters/commit/de75d48fba111e0aaf29d190c49e6533e5c4f278))
+
+### [2.7.10](https://github.com/9troisquarts/inline-filters/compare/v2.7.9...v2.7.10) (2025-10-06)
+
+### [2.7.9](https://github.com/9troisquarts/inline-filters/compare/v2.7.8...v2.7.9) (2025-10-06)
+
+
+### Bug Fixes
+
+* Permet d'ajouter une className au daterange filter ([a4d91fb](https://github.com/9troisquarts/inline-filters/commit/a4d91fb78f9f5ee16346bd5e29f8e21b9f8b0da3))
+
+### [2.7.8](https://github.com/9troisquarts/inline-filters/compare/v2.7.7...v2.7.8) (2025-08-05)
+
+
+### Bug Fixes
+
+* Fix async select filter & add range filter ([f4b8be8](https://github.com/9troisquarts/inline-filters/commit/f4b8be89a36f4fbd3aa1ce0bd72c2d3b86648453))
+
+### [2.7.7](https://github.com/9troisquarts/inline-filters/compare/v2.7.4...v2.7.7) (2025-07-31)
+
+
+### Bug Fixes
+
+* Corrige le filtre keywords qui ne s'affichait pas comme "actif" ([54be4ab](https://github.com/9troisquarts/inline-filters/commit/54be4ab5ec40b698e48183506b0d7bea03f868f5))
+* On met plutôt l'icone a gauche.. ([71e76f9](https://github.com/9troisquarts/inline-filters/commit/71e76f90860f98a0f53131ecb86da506b848719d))
+
+### [2.7.3](https://github.com/9troisquarts/inline-filters/compare/v2.7.2...v2.7.3) (2025-05-21)
+
+
+### Bug Fixes
+
+* Typo ([bd1901b](https://github.com/9troisquarts/inline-filters/commit/bd1901bbab25610e6816207fe60e1c7fc0892a41))
+
+### [2.7.2](https://github.com/9troisquarts/inline-filters/compare/v2.6.7...v2.7.2) (2025-04-11)
+
+
+### Bug Fixes
+
+* Allow badge to be set at 0 ([5b3c7f0](https://github.com/9troisquarts/inline-filters/commit/5b3c7f0fc8b738f4f0d1b78cad0ef2897962a5ab))
+
+### [2.7.1](https://github.com/9troisquarts/inline-filters/compare/v2.6.6...v2.7.1) (2025-03-21)
+
+### [2.6.6](https://github.com/9troisquarts/inline-filters/compare/v2.6.5...v2.6.6) (2025-03-21)
+
+### [2.6.7](https://github.com/9troisquarts/inline-filters/compare/v2.6.6...v2.6.7) (2025-03-28)
+
+
+### Bug Fixes
+
+* Ajout d'un dirty sur les champs de type select ([3f1d2f5](https://github.com/9troisquarts/inline-filters/commit/3f1d2f540587227db1821270023b4cb39bb329e6))
+
+### [2.6.6](https://github.com/9troisquarts/inline-filters/compare/v2.6.5...v2.6.6) (2025-02-19)
+
+
+### Bug Fixes
+
+* Suppression du onBlur && fix de la className focused ([ccdd6e9](https://github.com/9troisquarts/inline-filters/commit/ccdd6e9172a12f8bc636d0dacf8aeb53e51ad883))
+
+### [2.6.5](https://github.com/9troisquarts/inline-filters/compare/v2.6.4...v2.6.5) (2025-02-19)
+
+
+### Bug Fixes
+
+* load options correct spreading of keywords object ([82512b4](https://github.com/9troisquarts/inline-filters/commit/82512b4221712813a36f51e8d06da2cb026f77f2))
+* typescript errors ([656f797](https://github.com/9troisquarts/inline-filters/commit/656f79723f6fb0f6dbcf0d4064121b115960356d))
+
+### [2.5.1](https://github.com/9troisquarts/inline-filters/compare/v2.5.0...v2.5.1) (2025-01-21)
+
+## [2.5.0](https://github.com/9troisquarts/inline-filters/compare/v2.4.1...v2.5.0) (2025-01-21)
+
+
+### Features
+
+* Create exclude/include for keywords ([c803fbc](https://github.com/9troisquarts/inline-filters/commit/c803fbc9bd98c5a70a998ef2e18d1a274aaa7185))
+
+
+### Bug Fixes
+
+* load options correct spreading of keywords object ([82512b4](https://github.com/9troisquarts/inline-filters/commit/82512b4221712813a36f51e8d06da2cb026f77f2))
+* typescript errors ([656f797](https://github.com/9troisquarts/inline-filters/commit/656f79723f6fb0f6dbcf0d4064121b115960356d))
+
+### [2.4.1](https://github.com/9troisquarts/inline-filters/compare/v2.4.0...v2.4.1) (2024-12-03)
+
+## [2.4.0](https://github.com/9troisquarts/inline-filters/compare/v2.3.0...v2.4.0) (2024-12-03)
+
+
+### Features
+
+* Amélioration des submit si les valeurs de filtre ne changent pas ([919e7c9](https://github.com/9troisquarts/inline-filters/commit/919e7c91f3cd02571842d1af8f44aa4fbad38e10))
+* Fermer un filtre ne provoque plus un submit du formulaire si la valeur ne change pas ([d70e60e](https://github.com/9troisquarts/inline-filters/commit/d70e60e0b9ca9e25c599c1ed5a7c4ebca87e8eef))
+
+## [2.3.0](https://github.com/9troisquarts/inline-filters/compare/v2.2.0...v2.3.0) (2024-12-02)
+
+
+### Features
+
+* Ajout d'une recherche sur le sélecteur de filtre ([467193c](https://github.com/9troisquarts/inline-filters/commit/467193c5aeacc4e63fe6c2381f39bce804b464d6))
+
+## [2.2.0](https://github.com/9troisquarts/inline-filters/compare/v2.1.0...v2.2.0) (2024-11-25)
+
+
+### Features
+
+* Ajout de l'option pour avoir la possibilité de définir des filtres affichés par défaut ([f212895](https://github.com/9troisquarts/inline-filters/commit/f2128952a72d0166655f91d47ae88d459f44da5b))
+
+## [2.1.0](https://github.com/9troisquarts/inline-filters/compare/v2.0.0...v2.1.0) (2024-11-25)
+
+
+### Features
+
+* Le bouton reset est caché si aucune valeur n'est sélectionnée ([9253598](https://github.com/9troisquarts/inline-filters/commit/9253598ab27b0fa49d61cae3c646bde0bd2fb047))
+
+## [2.0.0](https://github.com/9troisquarts/inline-filters/compare/v1.2.1...v2.0.0) (2024-11-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Ajout de divers possibilités de customisation du sélecteur de filtre
+
+### Features
+
+* Ajout de divers possibilités de customisation du sélecteur de filtre ([fb0b180](https://github.com/9troisquarts/inline-filters/commit/fb0b180acd63f11beb96cbb29eb92c739d60f77d))
+
+
+### Bug Fixes
+
+* Changement de la séparation vers un point virgule ([4ed16f8](https://github.com/9troisquarts/inline-filters/commit/4ed16f81e29f569072d3dd023523f5204fea2b2f))
+
 ### [1.2.1](https://github.com/9troisquarts/inline-filters/compare/v1.2.0...v1.2.1) (2024-11-18)
 
 

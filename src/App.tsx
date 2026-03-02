@@ -25,6 +25,24 @@ const onLoadKeywordsOptions = async ({ keywords, matchType }: { keywords: string
   ]
 }
 
+const onLoadAsyncSelectOptions = async (search: string) => {
+  console.log('Loading async select options', search);
+
+  // Fetch data from the PokeAPI
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=200`);
+  const data = await response.json();
+
+  // Filter and format the results
+  const results = data.results
+    .filter((pokemon: { name: string }) => pokemon.name.toLowerCase().includes(search.toLowerCase()))
+    .map((pokemon: { name: string }) => ({
+      value: pokemon.name,
+      label: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)
+    }));
+
+  return results;
+};
+
 const marqueByInterest = [
   {
     label: 'Harry potter',
@@ -141,6 +159,28 @@ const schema: InlineFilterSchema = [
     }
   },
   {
+    name: 'priceRange',
+    label: 'Fourchette de prix',
+    title: 'Sélectionner une fourchette de prix',
+    input: {
+      type: 'range',
+      inputProps: {
+        min: 0,
+        max: 1000,
+        step: 10,
+        marks: {
+          0: '0€',
+          250: '250€',
+          500: '500€',
+          750: '750€',
+          1000: '1000€'
+        },
+        tipFormatter: (value: number | undefined) => value ? `${value}€` : '',
+        allowClear: true
+      }
+    }
+  },
+  {
     name: ['startingOn', 'endingOn'],
     title: 'Activité (range)',
     label: 'Actif entre le',
@@ -194,7 +234,19 @@ const schema: InlineFilterSchema = [
         }
       }
     }
-  }
+  },
+  {
+    name: 'async',
+    label: 'Async select',
+    input: {
+      type: 'asyncSelect',
+      inputProps: {
+        loadOptions: onLoadAsyncSelectOptions,
+        multiple: true,
+        searchPlaceholder: 'Rechercher...',
+      }
+    }
+  },
 ]
 
 // @ts-ignore
@@ -212,7 +264,7 @@ function App() {
   const onReset = () => setSearch({ activeOn: '2023-11-12', clients: [] })
 
   const onChange = (values: any) => {
-    console.log('values: ', values)
+    console.log('WILL REFETCH')
     setSearch(values)
   }
 
@@ -246,6 +298,7 @@ function App() {
           iconPosition: 'before',
           icon: <PlusOutlined />,
           showCount: true,
+          defaultValue: ['book'],
         },
         onChange: onVisibleModeChange,
       }
@@ -254,8 +307,10 @@ function App() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem'}}>
-      {configs.map(({ title, props }) => (
-        <div>
+      {configs.map(({ title, props }, index) => (
+        <div
+          key={`config-${index}`}
+        >
           <h2>{title}</h2>
           <InlineFilters
             defaultValue={search}
@@ -263,6 +318,7 @@ function App() {
             resetText="Réinitialiser les filtres"
             config={{
               okText: 'Filtrer',
+              locale: 'fr',
             }}
             schema={schema}
             {...props}

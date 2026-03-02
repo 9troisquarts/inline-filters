@@ -1,16 +1,18 @@
-// @ts-nocheck
 import { useDebounceFn, useLocalStorageState } from "ahooks";
-import { Button, ButtonProps, ConfigProvider, Space } from "antd";
-import omit from "lodash/omit";
+import { Button, ButtonProps, ConfigProvider } from "antd";
 import React, { cloneElement, useCallback, useEffect, useMemo, useState } from "react";
 import FilterToggler from "./FilterToggler";
-import { filterForType } from "./_utils";
+import { extractToggledFields, filterForType, isUntoggleable, objectIsPresent } from "./_utils";
 import SelectFilter from "./fields/SelectFilter";
 import { Configuration, FieldSchema, FilterTogglerType, InlineFilterSchema } from "./types";
 import fr_FR from 'antd/lib/locale/fr_FR';
 import en_GB from 'antd/lib/locale/en_GB';
 import es_ES from 'antd/lib/locale/es_ES';
-import { filter, pick } from "lodash";
+import { isEqual, pick } from "lodash";
+import dayjs from "./utils/dayjs";
+import 'dayjs/locale/fr';
+import 'dayjs/locale/en';
+import 'dayjs/locale/es';
 
 let config: Configuration = {
   locale: 'fr',
@@ -20,8 +22,7 @@ let config: Configuration = {
   okText: 'Rechercher',
   pullSelectedToTop: true,
   countBadgeThreshold: 0,
-  allowClear: false,
-  toggleMode: 'hidden'
+  allowClear: false
 };
 
 const antdLocaleForLocale = {
@@ -30,7 +31,7 @@ const antdLocaleForLocale = {
   es: es_ES,
 };
 
-interface BaseInlineFilters {
+type BaseInlineFilters<T extends Record<string, any>> = {
   schema: InlineFilterSchema;
   delay?: number;
   resetText?: string;
@@ -38,77 +39,66 @@ interface BaseInlineFilters {
   toggle?: FilterTogglerType;
   resetButton?: React.ReactNode;
   resetButtonProps?: ButtonProps;
-  onReset: () => void;
-  onChange: (object: any) => void;
+  // Always show the reset button, never show it, or show it only when filters are set
+  resetButtonVisibility?: "always" | "never" | "dirty";
+  onReset?: () => void;
+  onChange: (object: T, value: T) => void;
 }
 
-interface InlineFiltersWithDefaultValue extends BaseInlineFilters {
-  defaultValue: any;
-  value?: any;
+type InlineFiltersWithDefaultValue<T extends Record<string, any>> = {
+  defaultValue: T;
+  value?: T;
   config?: Configuration;
-}
+} & BaseInlineFilters<T>;
 
-interface InlineFiltersWithValue extends BaseInlineFilters {
-  defaultValue?: any;
-  value: any;
+type InlineFiltersWithValue<T extends Record<string, any>> = {
+  defaultValue?: T;
+  value: T;
   config?: Configuration;
-}
+} & BaseInlineFilters<T>;
 
-const isToggleable = (f: FieldSchema) => f.name && (f.toggleable || f.toggleable === undefined)
-const isUntoggleable = (field: FieldSchema) => !isToggleable(field);
-
-const InlineFilters: React.FC<
-  InlineFiltersWithDefaultValue | InlineFiltersWithValue
-> = (props) => {
+const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWithDefaultValue<T> | InlineFiltersWithValue<T>) => {
   const {
     schema,
     value = undefined,
     defaultValue = {},
-    debug = false,
     delay = 200,
     resetText,
     toggle,
+    resetButtonVisibility = 'dirty',
     resetButton,
     resetButtonProps = {},
     onReset,
   } = props;
 
   const [filtersToggled, setFiltersToggled] = useLocalStorageState<string[]>(
-    toggle?.key ? `${toggle?.key}-${toggle?.mode}-filters` : `filter-${toggle?.mode}-toggle`
+    toggle?.key ? `${toggle?.key}-${toggle?.mode || 'default'}-filters` : `filter-${toggle?.mode || 'default'}-toggle`,
+    {
+      defaultValue: toggle?.defaultValue || [],
+    }
   );
-  const [internalValue, setInternalValue] = useState(value || defaultValue);
-
-  useEffect(() => {
-    if(value) setInternalValue(value);
-  }, [value]);
+  const [internalValue, setInternalValue] = useState<T>((value || defaultValue) as T);
 
   const fieldsToPick = useMemo(() => {
     if (!toggle) return [];
     if (toggle?.mode === "visible") {
-      return schema.filter(isUntoggleable).flatMap(f => f.name).concat(filtersToggled || []);
+      return schema.filter(isUntoggleable).flatMap(f => f.name).concat(filtersToggled || []).flatMap((f) => f.toString().split("//="));
     } else {
       const filtersToGet = schema.flatMap(f => f.name);
-      return filtersToGet.filter(f => !filtersToggled?.includes(f));
+      return filtersToGet.filter(f => !filtersToggled?.includes(f.toString())).flatMap(f => f.toString().split("//="));
     }
   }, [filtersToggled?.join('//=')]);
 
-  const handleReset = () => {
-    if (onReset) {
-      if (!value) setInternalValue({});
-      onReset();
-    }
-  }
-
   const { run: handleChange } = useDebounceFn(
-    (values) => {
-      if (props.onChange) props.onChange(values);
+    (values, value) => {
+      if (props.onChange) props.onChange(values, value);
     },
     { wait: delay }
   );
 
-  const submitValues = (values: any) => {
+  const submitValues = (values: any, value: any) => {
     setInternalValue(values);
-    handleChange(values);
+    handleChange(values, value);
   };
 
   const onFilterChange = useCallback((values: any) => {
@@ -122,62 +112,43 @@ const InlineFilters: React.FC<
         toggle ? fieldsToPick : []
       )
     }
-    submitValues(
-      nextValues
-    );
+    if (!isEqual(nextValues, internalValue))
+      submitValues(
+        nextValues,
+        values
+      );
   }, [internalValue, fieldsToPick]);
 
-  const onFilterToggleChange = (names: string[]) => {
-    setFiltersToggled(names);
-    const nextValues = pick(
-      {
-        ...internalValue,
-      },
-      toggle ? names : []
-    );
-    submitValues(
-      nextValues
-    );
-  };
+  const onFilterToggleChange = useCallback((toggleableNames: string[]) => {
+    setFiltersToggled(toggleableNames);
+  }, [internalValue, fieldsToPick]);
+
+  useEffect(() => {
+    onFilterChange({});
+  }, [fieldsToPick])
+
+  useEffect(() => {
+    if(value) setInternalValue(value);
+  }, [value]);
+
+  const handleReset = () => {
+    if (onReset) {
+      if (!value) setInternalValue({} as T);
+      onReset();
+    }
+  }
 
   let resetComponent = (
     <Button type="text" {...resetButtonProps} onClick={handleReset}>
       {resetText || "Reset filters"}
     </Button>
   ) 
+  // @ts-ignore
   if (resetButton) resetComponent = cloneElement(resetButton, { onClick: handleReset });
-
-
-  const extractToggledFields = (schema: InlineFilterSchema, currentValue: string[], mode: 'default' | 'hidden' | 'visible') => {
-    if( mode === 'default' || mode === 'hidden') {
-      if (currentValue && currentValue.length > 0) {
-        return schema.filter(
-          (f) =>
-            (f.toggleable !== undefined && !f.toggleable) ||
-            !currentValue.includes(
-              Array.isArray(f.name) ? f.name.join("//=") : f.name
-            )
-        );
-      }
-    }
-    if(mode === 'visible') {
-      if (currentValue && currentValue.length > 0) {
-        return schema.filter(
-          (f) =>
-            (f.toggleable !== undefined && !f.toggleable) ||
-            currentValue.includes(
-              Array.isArray(f.name) ? f.name.join("//=") : f.name
-            )
-        );
-      }
-      return schema.filter(f => f && f.toggleable !== undefined && !f.toggleable);
-    }
-    return schema;
-  }
 
   const fields = useMemo(() => {
     if(toggle) {
-      return extractToggledFields(schema, filtersToggled, toggle?.mode || 'default')
+      return extractToggledFields(schema, filtersToggled || [], toggle?.mode || 'default')
     }
     return schema;
   }, [schema, filtersToggled]);
@@ -186,6 +157,8 @@ const InlineFilters: React.FC<
     ...config,
     ...(props.config || {})
   }
+
+  dayjs.locale(configuration.locale);
 
   const ToggleComponent = toggle ? (
     <FilterToggler
@@ -196,17 +169,20 @@ const InlineFilters: React.FC<
     />
   ) : undefined;
 
+  const showResetButton = onReset && (resetButtonVisibility === 'always' || (resetButtonVisibility == 'dirty' && internalValue && objectIsPresent(internalValue)));
+
   return (
     <ConfigProvider locale={antdLocaleForLocale[config.locale]}>
-      <Space style={{ width: "100%" }} wrap>
+      <>
         {toggle && (toggle?.position === "before") && (
           ToggleComponent
         )}
-        {fields.map((field) => {
+        {fields.map((field: FieldSchema) => {
           const FilterComponent = filterForType[field.input.type] || SelectFilter;
           return (
             <FilterComponent
               key={Array.isArray(field.name) ? field.name.join("--") : field.name}
+              // @ts-ignore
               field={field}
               defaultConfig={configuration}
               value={
@@ -224,8 +200,8 @@ const InlineFilters: React.FC<
         {toggle && (toggle?.position !== "before") && (
           ToggleComponent
         )}
-        {onReset && resetComponent}
-      </Space>
+      </>
+      {showResetButton && resetComponent}
     </ConfigProvider>
   );
 };

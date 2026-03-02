@@ -166,7 +166,7 @@
 .wand__inline-filter__popover .ant-popover-content {
   min-width: 300px;
   width: 100%;
-};
+}
 
 .wand__inline-filter__badge {
   margin-left: 8px;
@@ -341,13 +341,16 @@
   display: flex;
   gap: 5px;
   align-items: center;
-  padding: 5px;
+  font-size: 14px;
 }
 
-.wand__inline-filter__keywords__popover__keyword:hover {
-  background-color: #adbebc;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
+.wand__inline-filter__keywords__popover__keyword__list {
+  padding-left: 20px;
+  margin-bottom: 0;
+}
+
+.wand__inline-filter__keywords__popover__match-type-radio {
+  margin-top: 8px;
 }
 
 .wand__inline-filter__options-group__title {
@@ -364,4 +367,17 @@
 .wand__inline-filter__options-group .wand__inline-filter__options-container .wand__inline-filter__option {
   padding-left: 32px;
   padding-right: 32px;
+}
+
+.wand__inline-filter__range-popover .ant-popover-content {
+  min-width: 300px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.wand__inline-filter__wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
 }

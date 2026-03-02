@@ -54,9 +54,18 @@ export type SelectInputProps = {
     searchPlaceholder?: string;
     noOptionsFound?: string;
     selectAllText?: string;
+    clearFilterText?: string;
     unselectAllText?: string;
     className?: string;
   };
+};
+
+export type AsyncSelectInputProps = {
+  type: 'asyncSelect';
+  inputProps: SelectInputProps['inputProps'] & {
+    loadOptions: (search: string) => Promise<BaseOption[]>;
+    defaultOptionsCount?: number;
+  }
 };
 
 export type StringInputProps = {
@@ -78,7 +87,7 @@ export type BooleanInputProps = {
 };
 
 export type KeywordsLoadOptionsProps = {
-  keywords: string[]
+  keywords: string[];
   matchType: string
 };
 
@@ -90,6 +99,8 @@ export type KeywordsInputProps = {
     showCancel?: boolean;
     defaultMatchType?: string;
     i18n?: {
+      includeText?: string;
+      excludeText?: string;
       matchText?: string;
       allText?: string;
       anyText?: string;
@@ -101,13 +112,28 @@ export type KeywordsInputProps = {
   };
 };
 
+export type RangeInputProps = {
+  type: "range";
+  inputProps?: {
+    min?: number;
+    max?: number;
+    step?: number;
+    marks?: Record<number, string | { style?: React.CSSProperties; label?: string }>;
+    allowClear?: boolean;
+    tipFormatter?: (value: number | undefined) => React.ReactNode;
+    included?: boolean;
+  };
+};
+
 export type InputType =
   | DatePickerInputProps
   | SelectInputProps
   | DateInputProps
   | StringInputProps
   | BooleanInputProps
-  | KeywordsInputProps;
+  | AsyncSelectInputProps
+  | KeywordsInputProps
+  | RangeInputProps;
 
 export type FieldItemType = {
   label?: string;
@@ -129,7 +155,7 @@ export type FieldSchema =
       name: string;
     } & FieldType)
   | ({
-      name: string[];
+      name: Array<string>;
     } & FieldItemType & {
         input: DatePickerInputProps;
       });
@@ -140,6 +166,8 @@ export type FilterTogglerType = {
   key: string;
   text?: string;
   showCount?: boolean;
+  allowSearch?: boolean;
+  defaultValue?: string[];
   position?: 'default' | 'before' | 'after';
   mode?: 'default' | 'hidden' | 'visible';
   selectAllText?: string;
