@@ -1,7 +1,9 @@
+import React, { useEffect, useRef, useState } from "react";
+
 import { useSelections } from "ahooks";
 import { Button, Checkbox, Input, InputRef, Popover, Space } from "antd";
-import React, { useEffect, useRef, useState } from "react";
 import SVG from "react-inlinesvg";
+
 import filterSvg from "./icons/filter.svg";
 import scopeSvg from './icons/scope.svg';
 import "./index.css";
