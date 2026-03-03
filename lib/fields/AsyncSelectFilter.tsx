@@ -1,13 +1,15 @@
-import { Input, Divider, Button, InputRef, Popover, Checkbox, Space, Tooltip } from "antd";
-import Badge from '../components/Badge';
-import { FieldSchema, Configuration, BaseOption, AsyncSelectInputProps } from "../types";
 import { useEffect, useMemo, useRef, useState } from "react";
-import scopeSvg from '../icons/scope.svg';
+
+import { Input, Divider, Button, InputRef, Popover, Checkbox, Space, Tooltip } from "antd";
 import SVG from 'react-inlinesvg';
 import { useDebounce, useSelections } from "ahooks";
+import { isEqual, isNil, set } from "lodash";
+
+import Badge from '../components/Badge';
+import { FieldSchema, Configuration, BaseOption, AsyncSelectInputProps } from "../types";
+import scopeSvg from '../icons/scope.svg';
 import circleXMark from '../icons/circle-xmark.svg';
 import '../index.css';
-import { isEqual, isNil, set } from "lodash";
 
 type ValueType = string | number;
 

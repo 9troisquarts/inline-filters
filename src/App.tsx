@@ -1,13 +1,15 @@
 // @ts-nocheck
 import { useState } from 'react'
-import './App.css'
-import 'antd/dist/antd.css';
-import '../lib/index.css'
-import { faker } from '@faker-js/faker';
 import { PlusOutlined, UserOutlined } from '@ant-design/icons';
+import { faker } from '@faker-js/faker';
+import 'antd/dist/antd.css';
+import { Button, Descriptions, Input, InputNumber, Radio } from 'antd';
+
+import './App.css'
+import '../lib/index.css'
 import InlineFilters from '../lib/main';
 import { InlineFilterSchema } from '../lib/types';
-
+import { defaultContainerStyle } from '../lib/_utils';
 
 const clientsOptions = faker.helpers.uniqueArray(faker.person.fullName, 30).map((name: string) => ({ value: name, label: name }));
 
@@ -262,13 +264,18 @@ InlineFilters.configure({
 function App() {
   const [search, setSearch] = useState({ activeOn: '2023-11-12', clients: [] })
   const onReset = () => setSearch({ activeOn: '2023-11-12', clients: [] })
+  const [layout, setLayout] = useState<InlineFiltersLayout>('inline')
+  const [flexGap, setFlexGap] = useState(defaultContainerStyle.gap.replace('rem', ''))
+  const [locale, setLocale] = useState('fr');
+  const [resetText, setResetText] = useState('Réinitialiser les filtres');
+  const [okText, setOkText] = useState('Filtrer');
 
-  const onChange = (values: any) => {
+  const onChange = (values: Record<string, unknown>) => {
     console.log('WILL REFETCH')
     setSearch(values)
   }
 
-  const onVisibleModeChange = (values: any) => {
+  const onVisibleModeChange = (values: Record<string, unknown>) => {
     console.log('visible values: ', values)
     setSearch(values)
   }
@@ -305,26 +312,70 @@ function App() {
     }
   ]
 
+  const resetInlineProps = () => {
+    setLayout('inline')
+    setFlexGap(defaultContainerStyle.gap.replace('rem', ''))
+    setResetText('Réinitialiser les filtres')
+    setOkText('Filtrer')
+  }
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem'}}>
-      {configs.map(({ title, props }, index) => (
-        <div
-          key={`config-${index}`}
-        >
-          <h2>{title}</h2>
-          <InlineFilters
-            defaultValue={search}
-            onReset={onReset}
-            resetText="Réinitialiser les filtres"
-            config={{
-              okText: 'Filtrer',
-              locale: 'fr',
-            }}
-            schema={schema}
-            {...props}
-          />
-        </div>
-      ))}
+    <div>
+      <div style={{ position: 'fixed', top: 0, right: 0, zIndex: 1000, padding: '1rem', borderBottom: '1px solid #ccc', backgroundColor: 'white' }}>
+        <Descriptions title="Inline props" extra={<Button type="link" onClick={resetInlineProps}>Reset</Button>}>
+          <Descriptions.Item label="locale">
+            <Radio.Group value={locale} onChange={(e) => setLocale(e.target.value)}>
+              {['fr', 'en', 'es'].map((value) => (
+                <Radio key={value} value={value}>{value}</Radio>
+              ))}
+            </Radio.Group>
+          </Descriptions.Item>
+          <Descriptions.Item label="layout">
+            <Radio.Group value={layout} onChange={(e) => setLayout(e.target.value)}>
+              {['inline', 'vertical'].map((value) => (
+                <Radio key={value} value={value}>{value}</Radio>
+              ))}
+            </Radio.Group>
+          </Descriptions.Item>
+          <Descriptions.Item label="flexGap">
+            <InputNumber
+              value={flexGap}
+              onChange={(value) => setFlexGap(value)}
+              addonAfter="rem"
+              min={0}
+              step={0.1}
+            />
+          </Descriptions.Item>
+          <Descriptions.Item label="resetText">
+            <Input value={resetText} onChange={(e) => setResetText(e.target.value)} allowClear placeholder="Réinitialiser les filtres" width={200} />
+          </Descriptions.Item>
+          <Descriptions.Item label="okText" style={{ paddingLeft: '1rem' }}>
+            <Input value={okText} onChange={(e) => setOkText(e.target.value)} allowClear placeholder="Filtrer" width={200} />
+          </Descriptions.Item>
+        </Descriptions>
+      </div>
+      <div style={{paddingTop: '10rem'}}>
+        {configs.map(({ title, props }, index) => (
+          <div
+            key={`config-${index}`}
+          >
+            <h2>{title}</h2>
+            <InlineFilters
+              defaultValue={search}
+              onReset={onReset}
+              resetText={resetText}
+              config={{
+                locale,
+                okText: okText,
+              }}
+              flexGap={`${flexGap}rem`}
+              layout={layout}
+              schema={schema}
+              {...props}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
