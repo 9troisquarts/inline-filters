@@ -65,6 +65,14 @@ export const isDirty = (value: any | any[], newValue: any | any[]) => {
   return value !== newValue;
 }
 
+export const defaultContainerStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "1rem",
+  flexDirection: "row",
+  alignItems: "flex-start",
+};
+
 
 export const filterForType = {
   date: DateFilter,

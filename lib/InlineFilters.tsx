@@ -1,28 +1,45 @@
 import { useDebounceFn, useLocalStorageState } from "ahooks";
 import { Button, ButtonProps, ConfigProvider } from "antd";
-import React, { cloneElement, useCallback, useEffect, useMemo, useState } from "react";
-import FilterToggler from "./FilterToggler";
-import { extractToggledFields, filterForType, isUntoggleable, objectIsPresent } from "./_utils";
-import SelectFilter from "./fields/SelectFilter";
-import { Configuration, FieldSchema, FilterTogglerType, InlineFilterSchema } from "./types";
-import fr_FR from 'antd/lib/locale/fr_FR';
-import en_GB from 'antd/lib/locale/en_GB';
-import es_ES from 'antd/lib/locale/es_ES';
+import en_GB from "antd/lib/locale/en_GB";
+import es_ES from "antd/lib/locale/es_ES";
+import fr_FR from "antd/lib/locale/fr_FR";
+import "dayjs/locale/en";
+import "dayjs/locale/es";
+import "dayjs/locale/fr";
 import { isEqual, pick } from "lodash";
+import React, {
+  cloneElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import FilterToggler from "./FilterToggler";
+import {
+  defaultContainerStyle,
+  extractToggledFields,
+  filterForType,
+  isUntoggleable,
+  objectIsPresent,
+} from "./_utils";
+import SelectFilter from "./fields/SelectFilter";
+import {
+  Configuration,
+  FieldSchema,
+  FilterTogglerType,
+  InlineFilterSchema,
+} from "./types";
 import dayjs from "./utils/dayjs";
-import 'dayjs/locale/fr';
-import 'dayjs/locale/en';
-import 'dayjs/locale/es';
 
 let config: Configuration = {
-  locale: 'fr',
-  selectAllText: 'Sélectionner tout',
+  locale: "fr",
+  selectAllText: "Sélectionner tout",
   clearFilterText: "Clear",
-  unselectAllText: 'Désélectionner tout',
-  okText: 'Rechercher',
+  unselectAllText: "Désélectionner tout",
+  okText: "Rechercher",
   pullSelectedToTop: true,
   countBadgeThreshold: 0,
-  allowClear: false
+  allowClear: false,
 };
 
 const antdLocaleForLocale = {
@@ -30,6 +47,9 @@ const antdLocaleForLocale = {
   en: en_GB,
   es: es_ES,
 };
+
+export type InlineFiltersResetButtonVisibility = "always" | "never" | "dirty";
+export type InlineFiltersLayout = "inline" | "vertical";
 
 type BaseInlineFilters<T extends Record<string, any>> = {
   schema: InlineFilterSchema;
@@ -40,10 +60,13 @@ type BaseInlineFilters<T extends Record<string, any>> = {
   resetButton?: React.ReactNode;
   resetButtonProps?: ButtonProps;
   // Always show the reset button, never show it, or show it only when filters are set
-  resetButtonVisibility?: "always" | "never" | "dirty";
+  resetButtonVisibility?: InlineFiltersResetButtonVisibility;
+  /** "inline" (default): items in a row, wrap on small screens. "vertical": stacked. */
+  layout?: InlineFiltersLayout;
   onReset?: () => void;
   onChange: (object: T, value: T) => void;
-}
+  flexGap?: string | number;
+};
 
 type InlineFiltersWithDefaultValue<T extends Record<string, any>> = {
   defaultValue: T;
@@ -57,7 +80,9 @@ type InlineFiltersWithValue<T extends Record<string, any>> = {
   config?: Configuration;
 } & BaseInlineFilters<T>;
 
-const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWithDefaultValue<T> | InlineFiltersWithValue<T>) => {
+const InlineFilters = <T extends Record<string, any>>(
+  props: InlineFiltersWithDefaultValue<T> | InlineFiltersWithValue<T>
+) => {
   const {
     schema,
     value = undefined,
@@ -65,29 +90,41 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
     delay = 200,
     resetText,
     toggle,
-    resetButtonVisibility = 'dirty',
+    resetButtonVisibility = "dirty",
     resetButton,
     resetButtonProps = {},
+    layout = "inline",
     onReset,
+    flexGap = "1rem",
   } = props;
 
   const [filtersToggled, setFiltersToggled] = useLocalStorageState<string[]>(
-    toggle?.key ? `${toggle?.key}-${toggle?.mode || 'default'}-filters` : `filter-${toggle?.mode || 'default'}-toggle`,
+    toggle?.key
+      ? `${toggle?.key}-${toggle?.mode || "default"}-filters`
+      : `filter-${toggle?.mode || "default"}-toggle`,
     {
       defaultValue: toggle?.defaultValue || [],
     }
   );
-  const [internalValue, setInternalValue] = useState<T>((value || defaultValue) as T);
+  const [internalValue, setInternalValue] = useState<T>(
+    (value || defaultValue) as T
+  );
 
   const fieldsToPick = useMemo(() => {
     if (!toggle) return [];
     if (toggle?.mode === "visible") {
-      return schema.filter(isUntoggleable).flatMap(f => f.name).concat(filtersToggled || []).flatMap((f) => f.toString().split("//="));
+      return schema
+        .filter(isUntoggleable)
+        .flatMap((f) => f.name)
+        .concat(filtersToggled || [])
+        .flatMap((f) => f.toString().split("//="));
     } else {
-      const filtersToGet = schema.flatMap(f => f.name);
-      return filtersToGet.filter(f => !filtersToggled?.includes(f.toString())).flatMap(f => f.toString().split("//="));
+      const filtersToGet = schema.flatMap((f) => f.name);
+      return filtersToGet
+        .filter((f) => !filtersToggled?.includes(f.toString()))
+        .flatMap((f) => f.toString().split("//="));
     }
-  }, [filtersToggled?.join('//=')]);
+  }, [filtersToggled?.join("//=")]);
 
   const { run: handleChange } = useDebounceFn(
     (values, value) => {
@@ -101,34 +138,33 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
     handleChange(values, value);
   };
 
-  const onFilterChange = useCallback((values: any) => {
-    let nextValues = {
-      ...internalValue,
-      ...values,
-    };
-    if (toggle) {
-      nextValues = pick(
-        nextValues,
-        toggle ? fieldsToPick : []
-      )
-    }
-    if (!isEqual(nextValues, internalValue))
-      submitValues(
-        nextValues,
-        values
-      );
-  }, [internalValue, fieldsToPick]);
+  const onFilterChange = useCallback(
+    (values: any) => {
+      let nextValues = {
+        ...internalValue,
+        ...values,
+      };
+      if (toggle) {
+        nextValues = pick(nextValues, toggle ? fieldsToPick : []);
+      }
+      if (!isEqual(nextValues, internalValue)) submitValues(nextValues, values);
+    },
+    [internalValue, fieldsToPick]
+  );
 
-  const onFilterToggleChange = useCallback((toggleableNames: string[]) => {
-    setFiltersToggled(toggleableNames);
-  }, [internalValue, fieldsToPick]);
+  const onFilterToggleChange = useCallback(
+    (toggleableNames: string[]) => {
+      setFiltersToggled(toggleableNames);
+    },
+    [internalValue, fieldsToPick]
+  );
 
   useEffect(() => {
     onFilterChange({});
-  }, [fieldsToPick])
+  }, [fieldsToPick]);
 
   useEffect(() => {
-    if(value) setInternalValue(value);
+    if (value) setInternalValue(value);
   }, [value]);
 
   const handleReset = () => {
@@ -136,27 +172,32 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
       if (!value) setInternalValue({} as T);
       onReset();
     }
-  }
+  };
 
   let resetComponent = (
     <Button type="text" {...resetButtonProps} onClick={handleReset}>
       {resetText || "Reset filters"}
     </Button>
-  ) 
+  );
   // @ts-ignore
-  if (resetButton) resetComponent = cloneElement(resetButton, { onClick: handleReset });
+  if (resetButton)
+    resetComponent = cloneElement(resetButton as React.ReactElement, { onClick: handleReset });
 
   const fields = useMemo(() => {
-    if(toggle) {
-      return extractToggledFields(schema, filtersToggled || [], toggle?.mode || 'default')
+    if (toggle) {
+      return extractToggledFields(
+        schema,
+        filtersToggled || [],
+        toggle?.mode || "default"
+      );
     }
     return schema;
   }, [schema, filtersToggled]);
 
   const configuration = {
     ...config,
-    ...(props.config || {})
-  }
+    ...(props.config || {}),
+  };
 
   dayjs.locale(configuration.locale);
 
@@ -169,39 +210,64 @@ const InlineFilters = <T extends Record<string, any>, >(props: InlineFiltersWith
     />
   ) : undefined;
 
-  const showResetButton = onReset && (resetButtonVisibility === 'always' || (resetButtonVisibility == 'dirty' && internalValue && objectIsPresent(internalValue)));
+  const showResetButton =
+    onReset &&
+    (resetButtonVisibility === "always" ||
+      (resetButtonVisibility == "dirty" &&
+        internalValue &&
+        objectIsPresent(internalValue)));
+
+  const containerStyle: React.CSSProperties = {
+    ...defaultContainerStyle,
+    flexWrap: layout === "vertical" ? "nowrap" : "wrap",
+    gap: flexGap,
+    flexDirection: layout === "vertical" ? "column" : "row",
+    alignItems: layout === "vertical" ? "stretch" : "flex-start",
+  };
+
+  const itemStyle: React.CSSProperties = {
+    minWidth: 0,
+    maxWidth: "100%",
+  };
 
   return (
     <ConfigProvider locale={antdLocaleForLocale[config.locale]}>
-      <>
-        {toggle && (toggle?.position === "before") && (
-          ToggleComponent
+      <div style={containerStyle}>
+        {toggle && toggle?.position === "before" && (
+          <div style={itemStyle}>{ToggleComponent}</div>
         )}
         {fields.map((field: FieldSchema) => {
-          const FilterComponent = filterForType[field.input.type] || SelectFilter;
+          const FilterComponent =
+            filterForType[field.input.type] || SelectFilter;
           return (
-            <FilterComponent
-              key={Array.isArray(field.name) ? field.name.join("--") : field.name}
-              // @ts-ignore
-              field={field}
-              defaultConfig={configuration}
-              value={
-                Array.isArray(field.name)
-                  ? field.name.reduce((acc: any, name: string) => {
-                      acc[name] = internalValue[name];
-                      return acc;
-                    }, {})
-                  : internalValue[field.name]
+            <div
+              key={
+                Array.isArray(field.name) ? field.name.join("--") : field.name
               }
-              onChange={onFilterChange}
-            />
+              style={itemStyle}
+            >
+              <FilterComponent
+                // @ts-ignore
+                field={field}
+                defaultConfig={configuration}
+                value={
+                  Array.isArray(field.name)
+                    ? field.name.reduce((acc: any, name: string) => {
+                        acc[name] = internalValue[name];
+                        return acc;
+                      }, {})
+                    : internalValue[field.name]
+                }
+                onChange={onFilterChange}
+              />
+            </div>
           );
         })}
-        {toggle && (toggle?.position !== "before") && (
-          ToggleComponent
+        {toggle && toggle?.position !== "before" && (
+          <div style={itemStyle}>{ToggleComponent}</div>
         )}
-      </>
-      {showResetButton && resetComponent}
+        {showResetButton && <div style={itemStyle}>{resetComponent}</div>}
+      </div>
     </ConfigProvider>
   );
 };
