@@ -270,12 +270,12 @@ function App() {
   const [resetText, setResetText] = useState('Réinitialiser les filtres');
   const [okText, setOkText] = useState('Filtrer');
 
-  const onChange = (values: any) => {
+  const onChange = (values: Record<string, unknown>) => {
     console.log('WILL REFETCH')
     setSearch(values)
   }
 
-  const onVisibleModeChange = (values: any) => {
+  const onVisibleModeChange = (values: Record<string, unknown>) => {
     console.log('visible values: ', values)
     setSearch(values)
   }
@@ -368,7 +368,6 @@ function App() {
                 locale,
                 okText: okText,
               }}
-              containerStyle={{}}
               flexGap={`${flexGap}rem`}
               layout={layout}
               schema={schema}

@@ -73,7 +73,6 @@ export const defaultContainerStyle: React.CSSProperties = {
   alignItems: "flex-start",
 };
 
-
 export const filterForType = {
   date: DateFilter,
   string: StringFilter,

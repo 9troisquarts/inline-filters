@@ -61,25 +61,29 @@ export type BaseInlineFilters<T extends Record<string, any>> = {
   resetButtonProps?: ButtonProps;
   // Always show the reset button, never show it, or show it only when filters are set
   resetButtonVisibility?: InlineFiltersResetButtonVisibility;
-  /** "inline" (default): items in a row, wrap on small screens. "vertical": stacked. */
-  layout?: InlineFiltersLayout;
+  containerStyle?: React.CSSProperties;
   onReset?: () => void;
   onChange: (object: T, value: T) => void;
   flexGap?: string | number;
-  containerStyle?: React.CSSProperties;
+  /** "inline" (default): items in a row, wrap on small screens. "vertical": stacked. */
+  layout?: InlineFiltersLayout;
 };
 
-type InlineFiltersWithDefaultValue<T extends Record<string, any>> = {
+export type InlineFiltersWithDefaultValue<T extends Record<string, any>> = {
   defaultValue: T;
   value?: T;
   config?: Configuration;
 } & BaseInlineFilters<T>;
 
-type InlineFiltersWithValue<T extends Record<string, any>> = {
+export type InlineFiltersWithValue<T extends Record<string, any>> = {
   defaultValue?: T;
   value: T;
   config?: Configuration;
 } & BaseInlineFilters<T>;
+
+export type InlineFiltersProps<T extends Record<string, unknown>> =
+  | InlineFiltersWithDefaultValue<T>
+  | InlineFiltersWithValue<T>;
 
 const InlineFilters = <T extends Record<string, any>>(
   props: InlineFiltersWithDefaultValue<T> | InlineFiltersWithValue<T>
@@ -97,7 +101,7 @@ const InlineFilters = <T extends Record<string, any>>(
     layout = "inline",
     onReset,
     flexGap = "1rem",
-    containerStyle = defaultContainerStyle,
+    containerStyle = {},
   } = props;
 
   const [filtersToggled, setFiltersToggled] = useLocalStorageState<string[]>(
