@@ -51,7 +51,7 @@ const antdLocaleForLocale = {
 export type InlineFiltersResetButtonVisibility = "always" | "never" | "dirty";
 export type InlineFiltersLayout = "inline" | "vertical";
 
-type BaseInlineFilters<T extends Record<string, any>> = {
+export type BaseInlineFilters<T extends Record<string, any>> = {
   schema: InlineFilterSchema;
   delay?: number;
   resetText?: string;
@@ -66,6 +66,7 @@ type BaseInlineFilters<T extends Record<string, any>> = {
   onReset?: () => void;
   onChange: (object: T, value: T) => void;
   flexGap?: string | number;
+  containerStyle?: React.CSSProperties;
 };
 
 type InlineFiltersWithDefaultValue<T extends Record<string, any>> = {
@@ -96,6 +97,7 @@ const InlineFilters = <T extends Record<string, any>>(
     layout = "inline",
     onReset,
     flexGap = "1rem",
+    containerStyle = defaultContainerStyle,
   } = props;
 
   const [filtersToggled, setFiltersToggled] = useLocalStorageState<string[]>(
@@ -217,12 +219,13 @@ const InlineFilters = <T extends Record<string, any>>(
         internalValue &&
         objectIsPresent(internalValue)));
 
-  const containerStyle: React.CSSProperties = {
+  const currentContainerStyle: React.CSSProperties = {
     ...defaultContainerStyle,
-    flexWrap: layout === "vertical" ? "nowrap" : "wrap",
-    gap: flexGap,
-    flexDirection: layout === "vertical" ? "column" : "row",
-    alignItems: layout === "vertical" ? "stretch" : "flex-start",
+    ...containerStyle,
+    ...(containerStyle?.flexWrap ? { flexWrap: containerStyle.flexWrap } : { flexWrap: layout === "vertical" ? "nowrap" : "wrap" }),
+    ...(containerStyle?.gap ? { gap: containerStyle.gap } : { gap: flexGap }),
+    ...(containerStyle?.flexDirection ? { flexDirection: containerStyle.flexDirection } : { flexDirection: layout === "vertical" ? "column" : "row" }),
+    ...(containerStyle?.alignItems ? { alignItems: containerStyle.alignItems } : { alignItems: layout === "vertical" ? "stretch" : "flex-start" }),
   };
 
   const itemStyle: React.CSSProperties = {
@@ -232,7 +235,7 @@ const InlineFilters = <T extends Record<string, any>>(
 
   return (
     <ConfigProvider locale={antdLocaleForLocale[config.locale]}>
-      <div style={containerStyle}>
+      <div style={currentContainerStyle}>
         {toggle && toggle?.position === "before" && (
           <div style={itemStyle}>{ToggleComponent}</div>
         )}
