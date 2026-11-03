@@ -83,6 +83,7 @@ const SelectFilter: React.FC<FilterProps> = props => {
       unselectAllText,
       clearFilterText,
       okText,
+      noOptionsFound,
       options = [],
     } = {}
   } = (field?.input || {}) as SelectInputProps;
@@ -236,6 +237,12 @@ const SelectFilter: React.FC<FilterProps> = props => {
             showCheck={!!multiple}
           />
         ))}
+        {/* selectedOptions also checked: with pullSelectedToTop, selected options are listed above, not in filteredOptions */}
+        {noOptionsFound && filteredOptions.length === 0 && selectedOptions.length === 0 && (
+          <div className="wand__inline-filter__option wand__inline-filter__option--empty">
+            {noOptionsFound}
+          </div>
+        )}
       </div>
 
       {multiple && (
