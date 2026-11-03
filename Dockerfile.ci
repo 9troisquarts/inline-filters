@@ -1,0 +1,18 @@
+# la version exacte de .node-version
+ARG NODE_VERSION=22.14.0
+
+FROM node:${NODE_VERSION}-slim
+
+# git : actions/checkout s'en sert pour l'historique
+RUN apt-get update -qq && apt-get install -y --no-install-recommends git \
+  && rm -rf /var/lib/apt/lists/*
+
+# le cache npm seulement, pas node_modules :
+# le npm ci du job le remplit depuis ce cache, sans réseau
+ENV npm_config_cache=/usr/local/share/.cache/npm
+WORKDIR /deps
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund && rm -rf node_modules
+WORKDIR /
+# pas de USER : l'image tourne en root (sans danger en rootless)
+# aucun secret ici : pas de .npmrc, pas de .env
