@@ -1,0 +1,53 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [master, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  image:
+    runs-on: [self-hosted, 9tq-ci]
+    timeout-minutes: 30
+    permissions: { contents: read, packages: write }
+    outputs:
+      image: ${{ steps.tag.outputs.image }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: tag
+        # l'empreinte : TOUT ce que l'image copie ou installe
+        run: |
+          h=$(cat Dockerfile.ci package.json package-lock.json .node-version | sha256sum | cut -c1-16)
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/ci:$h" >> "$GITHUB_OUTPUT"
+      - name: Construire et pousser si absente
+        env:
+          IMAGE: ${{ steps.tag.outputs.image }}
+          TOKEN: ${{ github.token }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          printf '%s' "$TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
+          if ! docker manifest inspect "$IMAGE" >/dev/null 2>&1; then
+            docker build -f Dockerfile.ci --build-arg NODE_VERSION="$(cat .node-version)" -t "$IMAGE" .   # pilote par défaut
+            docker push "$IMAGE"
+          fi
+
+  build:
+    needs: image
+    runs-on: [self-hosted, 9tq-ci]
+    timeout-minutes: 30
+    permissions: { contents: read, packages: read }
+    container:
+      image: ${{ needs.image.outputs.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - run: npm ci --prefer-offline --no-audit --no-fund
+      - run: npm run build

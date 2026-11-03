@@ -140,6 +140,12 @@
   color: var(--wand-filter-color)
 }
 
+.wand__inline-filter__option--empty, .wand__inline-filter__option--empty:hover {
+  color: rgba(0, 0, 0, 0.45);
+  background-color: transparent;
+  cursor: default;
+}
+
 .wand__inline-filter__options-container, .wand__inline-filter__footer {
   margin-left: -16px;
   margin-right: -16px;

@@ -52,6 +52,26 @@ const schema: InlineFilterSchema = [
 | `>=2.7.19` | `layout` | **InlineFiltersLayout** | `inline` | Possible values: [`inline`, `vertical`], allow to force vertical rendering if needed, **__⚠️ if defined it will overrides `containerStyle`__** |
 | `>=2.7.19` | `flexGap` | **String** | `1rem` | Allow to adapt gap between filters, **__⚠️ if defined it will overrides `containerStyle.gap`__** |
 
+## Select filter (`type: 'select'`)
+
+| version | key | type | default value | details |
+| --- | --- | --- | --- | --- |
+| `>=2.7.20` | `noOptionsFound`| **String** | - | Text displayed (greyed, not clickable) when no option matches the search. Nothing is displayed if not provided |
+
+```typescript
+{
+  name: 'function',
+  label: 'Fonction',
+  input: {
+    type: 'select',
+    inputProps: {
+      options,
+      noOptionsFound: 'Aucune fonction',
+    }
+  }
+}
+```
+
 ## React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

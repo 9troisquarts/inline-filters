@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.20](https://github.com/9troisquarts/inline-filters/compare/v2.7.19...v2.7.20) (2026-11-03)
+
+
+### Features
+
+* **select:** `noOptionsFound` option, displayed when the search matches no option
+
 ### [2.7.19](https://github.com/9troisquarts/inline-filters/compare/v2.7.13...v2.7.19) (2026-03-03)
 
 
